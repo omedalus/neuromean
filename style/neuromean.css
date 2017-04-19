@@ -1,0 +1,29 @@
+body {
+  background-color: #fff;
+  background-image: url('../img/golgicells.jpg');
+  background-position: top;
+  background-repeat: repeat-x;
+  background-attachment: fixed;
+  background-size: 50%;
+}
+
+#mainview {
+  background-image: url('../img/pbranchaea-mouthcorner.png');
+  background-size: contain;
+  background-position: top left;
+  background-repeat: no-repeat;
+}
+
+circle.sensor {
+  fill: #606;
+  stroke: #ff0;
+}
+
+circle.integrator {
+  fill: #228;
+  stroke: #ff0;
+}
+
+line.sensoraxon {
+  stroke: #606;
+}
