@@ -27,3 +27,10 @@ circle.integrator {
 line.sensoraxon {
   stroke: #606;
 }
+
+#lateralinhibition {
+  cursor: pointer;
+}
+#lateralinhibition:hover text {
+  fill: #fff;
+}

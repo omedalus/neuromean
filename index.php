@@ -57,14 +57,17 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             >
         </circle>
         
+        <g id="lateralinhibition">
         <rect 
-            x="160" 
-            y="160" 
-            width="100" 
+            x="150" 
+            y="140" 
+            width="120" 
             height="20"
             rx="15"
-            ry="15"
-            id="lateralinhibition"/>
+            ry="15"/>
+          <text x="160" y="155" fill="#888">Lateral Inhibition</text>
+        </g>        
+        
         
       </svg>
     </article>
