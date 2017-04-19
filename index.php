@@ -58,16 +58,32 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
         </circle>
         
         <g id="lateralinhibition">
-        <rect 
-            x="150" 
-            y="140" 
-            width="120" 
-            height="20"
-            rx="15"
-            ry="15"/>
+          <line
+              data-ng-repeat="integrator in ctrl.integrators"
+              x1="210"
+              y1="150"
+              x2="{{positionCalculator.integratorX(integrator.i)}}" 
+              y2="{{positionCalculator.integratorY(integrator.i)}}" 
+          />
+          <rect 
+              x="150" 
+              y="140" 
+              width="120" 
+              height="20"
+              rx="15"
+              ry="15"/>
           <text x="160" y="155" fill="#888">Lateral Inhibition</text>
         </g>        
         
+        <circle 
+            data-ng-repeat="output in ctrl.outputs"
+            cx="{{positionCalculator.outputX(output.i)}}" 
+            cy="{{positionCalculator.outputY(output.i)}}" 
+            r="5"
+            class="output"
+            stroke-width="{{output.activity * 5}}"
+            >
+        </circle>
         
       </svg>
     </article>

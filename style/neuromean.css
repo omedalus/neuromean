@@ -24,12 +24,21 @@ circle.integrator {
   stroke: #ff0;
 }
 
+circle.output {
+  fill: #4c4;
+  stroke: #ff0;
+}
+
 line.sensoraxon {
   stroke: #606;
 }
 
 #lateralinhibition {
   cursor: pointer;
+}
+#lateralinhibition line {
+  stroke: #000;
+  stroke-width: 1;
 }
 #lateralinhibition:hover text {
   fill: #fff;

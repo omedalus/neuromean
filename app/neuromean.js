@@ -11,17 +11,27 @@ app.controller("neuromeanCtrl", function($scope) {
   ctrl.networkStructure = {
     numSensors: 30,
     numIntegrators: 8,
+    numOutputs: 2,
     sensorAxonSpread: 1
   };
   
   ctrl.connectionStrength = function(iSensor, iIntegrator) {
-    var xSensor = iSensor / ctrl.networkStructure.numSensors;
-    var xIntegrator = iIntegrator / ctrl.networkStructure.numIntegrators;
+    var xSensor = iSensor / (ctrl.networkStructure.numSensors - 1);
+    var xIntegrator = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
     var distance = Math.pow(xSensor - xIntegrator, 2);
     var retval = 1.0 - distance / ctrl.networkStructure.sensorAxonSpread;
     retval = Math.max(retval, 0);
     return retval;
   };
+
+  ctrl.outputStrength = function(iIntegrator, iOutput) {
+    var xIntegrator = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
+    var xOutput = iOutput / (ctrl.networkStructure.numOutputs - 1);
+    var distance = Math.abs(xOutput - xIntegrator);
+    var retval = 1.0 - distance;
+    return retval;
+  };
+
   
   $scope.positionCalculator = {
     sensorX: function(i) {
@@ -45,6 +55,16 @@ app.controller("neuromeanCtrl", function($scope) {
     
     integratorY: function(i) {
       return 120;
+    },
+
+    outputX: function(i) {
+      var xStart = 120;
+      var xEnd = 320;
+      return ((xEnd - xStart) * i / (ctrl.networkStructure.numOutputs - 1)) + xStart;
+    },
+    
+    outputY: function(i) {
+      return 200;
     }
   };
 
@@ -64,7 +84,17 @@ app.controller("neuromeanCtrl", function($scope) {
       integrator.i = iIntegrator;
       integrator.activity = 0;
     });
+    
+    ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
+    _.each(ctrl.outputs, function(output, iOutput) {
+      output = {};
+      ctrl.outputs[iOutput] = output;
+      output.i = iOutput;
+      output.activity = 0;
+    });
   }; 
+  
+  $scope.outputLabels = ['LOVN', 'TN'];
   
   ctrl.computeIntegratorActivities = function() {
     _.each(ctrl.integrators, function(integrator) {
@@ -88,6 +118,17 @@ app.controller("neuromeanCtrl", function($scope) {
       maxIntegrator.activity = 1;
     }
   };
+
+  ctrl.computeOutputActivities = function() {
+    _.each(ctrl.outputs, function(output) {
+      output.activity = 0;
+      _.each(ctrl.integrators, function(integrator) {
+        var conn = ctrl.outputStrength(integrator.i, output.i);
+        output.activity += conn * integrator.activity;
+      });
+    });
+  };
+
   
   $('#mainview').
       on('mouseenter', 'circle.sensor', function() {
@@ -103,11 +144,13 @@ app.controller("neuromeanCtrl", function($scope) {
         var iSensor = parseInt($(this).attr('data-index'), 10);
         ctrl.sensors[iSensor].activity = !ctrl.sensors[iSensor].activity;
         ctrl.computeIntegratorActivities();
-        console.log(ctrl.integrators)
+        ctrl.computeOutputActivities();
         $scope.$apply();
       }).
       on('click', '#lateralinhibition', function() {
         ctrl.computeLateralInhibition();
+        ctrl.computeOutputActivities();
+        console.log(ctrl.outputs)
         $scope.$apply();
       });
 
