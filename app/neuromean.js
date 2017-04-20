@@ -10,7 +10,7 @@ app.controller("neuromeanCtrl", function($scope) {
   
   ctrl.networkStructure = {
     numSensors: 30,
-    numIntegrators: 8,
+    numIntegrators: 7,
     numOutputs: 2,
     sensorAxonSpread: 1
   };

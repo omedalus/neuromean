@@ -96,7 +96,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       
     </div>
   
-    <article data-ng-controller="neuromeanCtrl" class="col-md-6">
+    <article data-ng-controller="neuromeanCtrl" class="col-md-6 noselect">
       <svg id="mainview" width="500" height="300">
 
         <line
