@@ -43,6 +43,9 @@ circle.sensor {
   stroke: #ff0;
   cursor: pointer;
 }
+circle.sensor.isbeingtouched {
+  fill: #e0e;
+}
 
 circle.integrator {
   fill: #228;
