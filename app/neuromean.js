@@ -144,13 +144,19 @@ app.controller("neuromeanCtrl", function($scope) {
         var iSensor = parseInt($(this).attr('data-index'), 10);
         ctrl.sensors[iSensor].activity = !ctrl.sensors[iSensor].activity;
         ctrl.computeIntegratorActivities();
+        if (ctrl.autolateral) {
+          ctrl.computeLateralInhibition();
+        }
         ctrl.computeOutputActivities();
         $scope.$apply();
       }).
       on('click', '#lateralinhibition', function() {
         ctrl.computeLateralInhibition();
         ctrl.computeOutputActivities();
-        console.log(ctrl.outputs)
+        $scope.$apply();
+      }).
+      on('dblclick', '#lateralinhibition', function() {
+        ctrl.autolateral = !ctrl.autolateral;
         $scope.$apply();
       });
 

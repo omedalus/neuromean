@@ -16,11 +16,87 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
   </head>
 
   <body class="container">
-    <header>
+    <header class="col-sm-12">
       <h1>Neuromean</h1>
+      <p>
+        A demonstration of how somatospatial 
+        neurocircuits can be used
+        to compute spatial averages.
+      </p>
     </header>
+    
+    <div class="col-md-6 instructions">
+      <p>
+        Hover over a 
+        <span class="sensortext">primary sensor neuron</span>
+        to see its connection strengths to each of the 
+        <span class="integratortext">spatial integrator neurons</span>.
+      </p>
+      <p>
+        Click on a  
+        <span class="sensortext">primary sensor neuron</span>
+        to activate it. This simulates the animal being touched
+        in the corresponding location of its anatomy. The more 
+        sensors you activate, the more forceful the simulated
+        contact. The 
+        <span class="integratortext">spatial integrator neurons</span>
+        will activate corresponding to their proximity to the 
+        activated sensory neurons.
+      </p>
+      <p>
+        Click the 
+        <span class="lateralinhibitiontext">
+          lateral inhibition button
+        </span>
+        to see the effects of lateral inhibition in the 
+        spatial integration layer. This causes the 
+        <span class="integratortext">spatial integrator neurons</span>
+        to "fight" with one another over who gets to be active and
+        who doesn't. In the end, only one can win: the one that is
+        receiving the greatest amount of total stimulation from the 
+        sensory layer. If this simulation is working properly, then the 
+        "winning" spatial integrator will be the one that represents the 
+        "center of mass" of the activated input neurons.
+      </p>
+      <p>
+        Double-click the 
+        <span class="lateralinhibitiontext">
+          lateral inhibition button
+        </span>
+        to perform lateral inhibition automatically as you turn
+        sensory neurons on and off.
+        
+        In reality, lateral inhibition is not a separate step; 
+        it happens automatically as interneurons get stimulated.
+        We merely have a button for it here for user interface purposes,
+        so that you could see what the spatial integration layer's 
+        activity <em>would</em> be if it was a simple summation of the 
+        sensor contributions. 
+      </p>
+      <p>
+        The
+        <span class="outputtext">
+          output neurons
+        </span>
+        project axons into nerves that head towards the central
+        nervous system. They receive input from each spatial integrator 
+        in simple linear proportion to their distance from that integrator.
+      </p>
+      <p>
+        The key takeaways are as follows:
+        <ul>
+          <li>An isolated stimulus on the left strongly activates the nerve on the left.</li>
+          <li>An isolated stimulus on the right strongly activates the nerve on the right.</li>
+          <li>An isolated stimulus near the center produces middling activity in both nerves.</li>
+          <li>A <em>dual</em> stimulus on both the left <em>and</em> the right produces 
+          output that resembles an isolated stimulus in the center &mdash; that is,
+          middling activity in both nerves.</li>
+        </ul>
+      </p>
+      
+    </div>
   
-    <article data-ng-controller="neuromeanCtrl">
+    <article data-ng-controller="neuromeanCtrl" class="col-md-6">
       <svg id="mainview" width="500" height="300">
 
         <line
@@ -57,7 +133,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             >
         </circle>
         
-        <g id="lateralinhibition">
+        <g id="lateralinhibition"
+            data-ng-class="{autolateral: ctrl.autolateral}">
           <line
               data-ng-repeat="integrator in ctrl.integrators"
               x1="210"
