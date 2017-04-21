@@ -13,7 +13,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     numIntegrators: 30,
     numOutputs: 2,
     sensorAxonSpread: .1,
-    integratorLateralInhibitionSpread: .2
+    integratorLateralSpread: .1
   };
   
   ctrl.connectionStrength = function(iSensor, iIntegrator) {
@@ -42,11 +42,11 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     return retval;
   };
 
-  ctrl.integratorLateralInhibitionStrength = function(iIntegrator, iNeighbor) {
+  ctrl.integratorLateralStrength = function(iIntegrator, iNeighbor) {
     var xIntegrator = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
     var xNeighbor = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
     var distance = Math.abs(xNeighbor - xIntegrator);
-    var retval = 1.0 - distance / ctrl.networkStructure.sensorAxonSpread;
+    var retval = 1.0 - distance / ctrl.networkStructure.integratorLateralSpread;
     retval = Math.max(retval, 0);
     return retval;
   };
@@ -132,7 +132,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
 
       // Activity level gets pulled toward activityNext.
       var activityDelta = neuron.activityNext - neuron.activity;
-      neuron.activity += activityDelta * .5;
+      neuron.activity += activityDelta * .1;
       if (neuron.activity < 0.0001) {
         neuron.activity = 0;
       }
@@ -165,52 +165,49 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
       _.each(ctrl.integrators, function(integrator) {
         var connStrength = ctrl.connectionStrength(sensor.i, integrator.i);
         
-        var sensorStimulationFactor = 3 / ctrl.totalStrengthToIntegrator(integrator.i);
+        var sensorStimulationFactor = 1;
         connStrength *= sensorStimulationFactor; 
         integrator.activityNext += sensor.activity * connStrength;
       });
     });
     
-    // Integrators suppress each other.
-    /*
+    // Integrators reinforce each other.
     _.each(ctrl.integrators, function(integrator) {
       _.each(ctrl.integrators, function(neighbor) {
         if (neighbor.i == integrator.i) {
           return;
         }
         
-        var latStrength = ctrl.integratorLateralInhibitionStrength(integrator.i, neighbor.i);
-        var neighborSuppressionFactor = 1;
-        integrator.activityNext -= neighbor.activity * neighborSuppressionFactor * latStrength;
+        var latStrength = ctrl.integratorLateralStrength(integrator.i, neighbor.i);
+        var neighborStimulusFactor = .4; 
+        integrator.activityNext += neighbor.activity * neighborStimulusFactor * latStrength;
       });
     });
-    */
-    
+
+    /*
     // Integrators feed back to sensors.
     _.each(ctrl.sensors, function(sensor) {
       _.each(ctrl.integrators, function(integrator) {
         var connStrength = ctrl.connectionStrength(sensor.i, integrator.i);
         
-        var integratorFeedbackFactor = 3 / ctrl.totalStrengthToIntegrator(integrator.i);
+        var integratorFeedbackFactor = .2;
         connStrength *= integratorFeedbackFactor; 
         sensor.activityNext += integrator.activity * connStrength;
       });
     });
+    */
     
     // Integrators have an activation threshold.
-    // This is roughly the same magnitude as the perturbation.
-    /*
     _.each(ctrl.integrators, function(integrator) {
-      integrator.activityNext -= 0.05;
+      integrator.activityNext -= 0.5;
     });
-    */
 
     // Integrators drive output.
     _.each(ctrl.integrators, function(integrator) {
       _.each(ctrl.outputs, function(output) {
         var connStrength = ctrl.outputStrength(integrator.i, output.i);
         
-        var outputStrengthFactor = 0.1; 
+        var outputStrengthFactor = 0.5; 
         connStrength *= outputStrengthFactor; 
         output.activityNext += integrator.activity * connStrength;
       });
@@ -224,10 +221,10 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
         // Suppression strength is nonlinear.
         // Nearby is (almost) no suppression, far away is strong suppression... 
         // but middle is still very low suppression.
-        suppressionStrength = Math.pow(suppressionStrength, 1.5);
-        suppressionStrength += .5;
+        suppressionStrength = Math.pow(suppressionStrength, 2);
+        suppressionStrength += 2;
         
-        var outputSuppressionFactor = 1; 
+        var outputSuppressionFactor = 0; 
         suppressionStrength *= outputSuppressionFactor; 
         integrator.activityNext -= output.activity * suppressionStrength;
       });
