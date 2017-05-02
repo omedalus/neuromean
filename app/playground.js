@@ -41,35 +41,18 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   var createNetwork = function() {
     ctrl.sensors = new Array(ctrl.networkStructure.numSensors);
     _.each(ctrl.sensors, function(sensor, iSensor) {
-      sensor = {};
-      ctrl.sensors[iSensor] = sensor;
-      sensor.i = iSensor;
-      sensor.p = iSensor / (ctrl.networkStructure.numSensors - 1);
-      sensor.activity = 0;
-      sensor.activityNext = 0;
-      sensor.threshold = 0;
+      ctrl.sensors[iSensor] = new Neuron('sensor', iSensor, ctrl.networkStructure.numSensors);
     });
-    
+
     ctrl.integrators = new Array(ctrl.networkStructure.numIntegrators);
     _.each(ctrl.integrators, function(integrator, iIntegrator) {
-      integrator = {};
-      ctrl.integrators[iIntegrator] = integrator;
-      integrator.i = iIntegrator;
-      integrator.p = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
-      integrator.activity = 0;
-      integrator.activityNext = 0;
-      integrator.threshold = -1;
+      ctrl.integrators[iIntegrator] = new Neuron('integrator', iIntegrator, ctrl.networkStructure.numIntegrators);
+      ctrl.integrators[iIntegrator].threshold = -1;
     });
     
     ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
     _.each(ctrl.outputs, function(output, iOutput) {
-      output = {};
-      ctrl.outputs[iOutput] = output;
-      output.i = iOutput;
-      output.p = iOutput / (ctrl.networkStructure.numOutputs - 1);
-      output.activity = 0;
-      output.activityNext = 0;
-      output.threshold = 0;
+      ctrl.outputs[iOutput] = new Neuron('output', iOutput, ctrl.networkStructure.numOutputs);
     });
   }; 
 
