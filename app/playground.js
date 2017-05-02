@@ -12,56 +12,166 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     numSensors: 100,
     numIntegrators: 30,
     numOutputs: 2,
-    sensorAxonSpread: .1,
+    sensorAxonSpread: .05,
     integratorLateralSpread: .1
   };
-  
-  ctrl.connectionStrength = function(iSensor, iIntegrator) {
-    var xSensor = iSensor / (ctrl.networkStructure.numSensors - 1);
-    var xIntegrator = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
-    var distance = Math.abs(xSensor - xIntegrator);
-    var retval = 1.0 - distance / ctrl.networkStructure.sensorAxonSpread;
-    retval = Math.max(retval, 0);
-    return retval;
-  };
 
-  ctrl.totalStrengthToIntegrator = function(iIntegrator) {
-    var retval = 0;
-    _.each(ctrl.sensors, function(sensor) {
-      retval += ctrl.connectionStrength(sensor.i, iIntegrator);
+  var createNetwork = function() {
+    ctrl.sensors = new Array(ctrl.networkStructure.numSensors);
+    _.each(ctrl.sensors, function(sensor, iSensor) {
+      sensor = {};
+      ctrl.sensors[iSensor] = sensor;
+      sensor.i = iSensor;
+      sensor.p = iSensor / (ctrl.networkStructure.numSensors - 1);
+      sensor.activity = 0;
+      sensor.activityNext = 0;
+      sensor.threshold = 0;
     });
-    return retval;
+    
+    ctrl.integrators = new Array(ctrl.networkStructure.numIntegrators);
+    _.each(ctrl.integrators, function(integrator, iIntegrator) {
+      integrator = {};
+      ctrl.integrators[iIntegrator] = integrator;
+      integrator.i = iIntegrator;
+      integrator.p = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
+      integrator.activity = 0;
+      integrator.activityNext = 0;
+      integrator.threshold = 0;
+    });
+    
+    ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
+    _.each(ctrl.outputs, function(output, iOutput) {
+      output = {};
+      ctrl.outputs[iOutput] = output;
+      output.i = iOutput;
+      output.p = iOutput / (ctrl.networkStructure.numOutputs - 1);
+      output.activity = 0;
+      output.activityNext = 0;
+      output.threshold = 0;
+    });
+  }; 
+
+
+  var setNextActivityLevels = function(neuronArray) {
+    _.each(neuronArray, function(neuron) {
+      // Add a random perturbation to prevent ties.
+      //neuron.activityNext += (Math.random() * .1) - 0.05;
+      
+      // Activity level gets pulled toward activityNext.
+      var activityDelta = neuron.activityNext - neuron.activity;
+      neuron.activity += activityDelta * .4;
+      if (neuron.activity < 0.0001) {
+        neuron.activity = 0;
+      }
+
+      if (neuron.activity < 0) {
+        neuron.activity = 0;
+      }
+      if (neuron.activity > 1) {
+        neuron.activity = 1;
+      }
+
+
+      neuron.activityNext = neuron.activity;
+    });
   };
-
-
-  ctrl.outputStrength = function(iIntegrator, iOutput) {
-    var xIntegrator = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
-    var xOutput = iOutput / (ctrl.networkStructure.numOutputs - 1);
-    var distance = Math.abs(xOutput - xIntegrator);
-    var retval = 1.0 - distance;
-    return retval;
-  };
-
-  ctrl.integratorLateralStrength = function(iIntegrator, iNeighbor) {
-    var xIntegrator = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
-    var xNeighbor = iNeighbor / (ctrl.networkStructure.numIntegrators - 1);
-    var distance = Math.abs(xNeighbor - xIntegrator);
-    var retval = 1.0 - distance / ctrl.networkStructure.integratorLateralSpread;
-    retval = Math.max(retval, 0);
-    return retval;
-  };
-
-  ctrl.sensorLateralStrength = function(iSensor, iNeighbor) {
-    var xSensor = iSensor / (ctrl.networkStructure.numSensors - 1);
-    var xNeighbor = iNeighbor / (ctrl.networkStructure.numSensors - 1);
-    var distance = Math.abs(xNeighbor - xSensor);
-    var retval = 1.0 - distance / ctrl.networkStructure.sensorAxonSpread;
-    retval = Math.max(retval, 0);
-    return retval;
-  };
-
-
   
+  var computeStrength = function(deltap, spread) {
+    deltap = Math.abs(deltap);
+    var strength = Math.max(0, 1.0 - deltap/spread);
+    return strength;
+  };
+  
+  ctrl.doTimeStep = function() {
+    _.each(ctrl.integrators, function(integrator) {
+      integrator.activityNext = -integrator.threshold;
+    });
+    _.each(ctrl.outputs, function(output) {
+      output.activityNext = -output.threshold;
+    });
+
+
+    // Sensors are off by default, and turn on when touched.
+    _.each(ctrl.sensors, function(sensor) {
+      if (sensor.isBeingTouched) {
+        sensor.activityNext = 1;
+      } else {
+        sensor.activityNext = 0;
+      }
+    });
+
+
+    // Integrators sometimes turn on for no reason.
+    _.each(ctrl.integrators, function(integrator) {
+      var integratorSpontaneousActivityProb = 0.05;
+      if (Math.random() > integratorSpontaneousActivityProb) {
+        return;
+      }
+      integrator.activityNext += 1;
+    });
+
+
+    // Integrators laterally excite each other.
+    _.each(ctrl.integrators, function(integrator) {
+      var neighborMax = 0;
+      for (var iNeighbor = integrator.i - 1; 
+           iNeighbor <= integrator.i + 1;
+           iNeighbor += 2)
+      {
+        var neighbor = ctrl.integrators[iNeighbor];
+        if (_.isUndefined(neighbor)) {
+          continue;
+        }
+        neighborMax = Math.max(neighborMax, neighbor.activity);
+      }
+      var lateralExcitationFactor = 1;
+      integrator.activityNext += 
+          Math.max(integrator.activityNext, neighborMax * lateralExcitationFactor);
+    });
+
+
+    // Sensors inhibit integrators.
+    _.each(ctrl.sensors, function(sensor) {
+      _.each(ctrl.integrators, function(integrator) {
+        var sensorIntegratorFactor = 1;
+        var strength = 
+            computeStrength(
+                sensor.p - integrator.p, 
+                ctrl.networkStructure.sensorAxonSpread
+            );
+        integrator.activityNext -= 
+            sensor.activity * strength * sensorIntegratorFactor;
+      });
+    });
+
+
+    // Integrators adjust their own thresholds to keep themselves quiescent.
+    _.each(ctrl.integrators, function(integrator) {
+      if (integrator.activity > 0) {
+        // Activity causes the threshold to rise rapidly.
+        integrator.threshold += 0.05;
+      }
+      else {
+        // Quiescence causes the threshold to slowly relax.
+        integrator.threshold -= 0.01;
+      }
+      
+      // Threshold can't drop below zero.
+      // That's already modeled by the spontaneous activity.
+      integrator.threshold = Math.max(0, integrator.threshold);
+    });
+
+
+    var outputActivityNext = _.pluck(ctrl.outputs, 'activityNext');
+    console.log(outputActivityNext)
+
+
+    setNextActivityLevels(ctrl.sensors);
+    setNextActivityLevels(ctrl.integrators);    
+    setNextActivityLevels(ctrl.outputs);
+  };
+
+
   $scope.positionCalculator = {
     sensorX: function(i) {
       var xStart = 40;
@@ -96,176 +206,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
       return 400;
     }
   };
-
-  var createNetwork = function() {
-    ctrl.sensors = new Array(ctrl.networkStructure.numSensors);
-    _.each(ctrl.sensors, function(sensor, iSensor) {
-      sensor = {};
-      ctrl.sensors[iSensor] = sensor;
-      sensor.i = iSensor;
-      sensor.activity = 0;
-      sensor.activityNext = 0;
-    });
-    
-    ctrl.integrators = new Array(ctrl.networkStructure.numIntegrators);
-    _.each(ctrl.integrators, function(integrator, iIntegrator) {
-      integrator = {};
-      ctrl.integrators[iIntegrator] = integrator;
-      integrator.i = iIntegrator;
-      integrator.activity = 0;
-      integrator.activityNext = 0;
-    });
-    
-    ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
-    _.each(ctrl.outputs, function(output, iOutput) {
-      output = {};
-      ctrl.outputs[iOutput] = output;
-      output.i = iOutput;
-      output.activity = 0;
-      output.activityNext = 0;
-    });
-  }; 
-  
-
-  var setNextActivityLevels = function(neuronArray) {
-    _.each(neuronArray, function(neuron) {
-      // Add a random perturbation to prevent ties.
-      //neuron.activityNext += (Math.random() * .1) - 0.05;
-      
-      if (neuron.activityNext < 0) {
-        neuron.activityNext = 0;
-      }
-      if (neuron.activityNext > 1) {
-        neuron.activityNext = 1;
-      }
-
-      // Activity level gets pulled toward activityNext.
-      var activityDelta = neuron.activityNext - neuron.activity;
-      neuron.activity += activityDelta * .5;
-      if (neuron.activity < 0.0001) {
-        neuron.activity = 0;
-      }
-
-      neuron.activityNext = neuron.activity;
-    });
-  };
-  
-  ctrl.doTimeStep = function() {
-    // Integrators and outouts need their activity actively maintained,
-    // or else they drop off quickly.
-    _.each(ctrl.integrators, function(integrator) {
-      integrator.activityNext = 0;
-    });
-    _.each(ctrl.outputs, function(output) {
-      output.activityNext = 0;
-    });
-
-    // Sensors are off by default, and turn on when touched.
-    _.each(ctrl.sensors, function(sensor) {
-      if (sensor.isBeingTouched) {
-        sensor.activityNext = 1;
-      } else {
-        sensor.activityNext = 0;
-      }
-    });
-    
-    
-    // Sensors reinforce each other.
-    _.each(ctrl.sensors, function(sensor) {
-      _.each(ctrl.sensors, function(neighbor) {
-        if (sensor.i == neighbor.i) {
-          return;
-        }
-        // TODO.
-      });
-    });
-    
-    
-    
-
-    // Sensors stimulate integrators.
-    _.each(ctrl.sensors, function(sensor) {
-      _.each(ctrl.integrators, function(integrator) {
-        var connStrength = ctrl.connectionStrength(sensor.i, integrator.i);
-        
-        var sensorStimulationFactor = .5;
-        connStrength *= sensorStimulationFactor; 
-        integrator.activityNext += sensor.activity * connStrength;
-      });
-    });
-    
-    // Integrators reinforce each other.
-    _.each(ctrl.integrators, function(integrator) {
-      _.each(ctrl.integrators, function(neighbor) {
-        if (neighbor.i == integrator.i) {
-          return;
-        }
-        
-        var latStrength = ctrl.integratorLateralStrength(integrator.i, neighbor.i);
-        var neighborStimulusFactor = .49; 
-        integrator.activityNext += neighbor.activity * neighborStimulusFactor * latStrength;
-      });
-    });
-
-    /*
-    // Integrators feed back to sensors.
-    _.each(ctrl.sensors, function(sensor) {
-      _.each(ctrl.integrators, function(integrator) {
-        var connStrength = ctrl.connectionStrength(sensor.i, integrator.i);
-        
-        var integratorFeedbackFactor = .1;
-        connStrength *= integratorFeedbackFactor; 
-        sensor.activityNext += integrator.activity * connStrength;
-      });
-    });
-    */
-
-    /*
-    // Integrators have an activation threshold.
-    _.each(ctrl.integrators, function(integrator) {
-      integrator.activityNext -= 0.5;
-    });
-    */
-
-    // Integrators drive output.
-    _.each(ctrl.integrators, function(integrator) {
-      _.each(ctrl.outputs, function(output) {
-        var connStrength = ctrl.outputStrength(integrator.i, output.i);
-        
-        var outputStrengthFactor = 
-            3 * 
-            ctrl.networkStructure.numOutputs / 
-            ctrl.networkStructure.numIntegrators; 
-        connStrength *= outputStrengthFactor; 
-        output.activityNext += integrator.activity * connStrength;
-      });
-    });
-
-/*
-    // Output suppresses distal integrators.
-    _.each(ctrl.integrators, function(integrator) {
-      _.each(ctrl.outputs, function(output) {
-        var suppressionStrength = 1 - ctrl.outputStrength(integrator.i, output.i);
-        
-        // Suppression strength is nonlinear.
-        // Nearby is (almost) no suppression, far away is strong suppression... 
-        // but middle is still very low suppression.
-        suppressionStrength = Math.pow(suppressionStrength, 1.2);
-        
-        var outputSuppressionFactor = .6; 
-        suppressionStrength *= outputSuppressionFactor; 
-
-        suppressionStrength += 1;
-        integrator.activityNext -= output.activity * suppressionStrength;
-      });
-    });
-    */
-
-    setNextActivityLevels(ctrl.sensors);
-    setNextActivityLevels(ctrl.integrators);    
-    setNextActivityLevels(ctrl.outputs);
-  };
-
   
   $('#mainview').
       on('mouseenter', 'circle.sensor', function() {
@@ -287,10 +227,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   
   var animate = function() {
     ctrl.doTimeStep();
-
-    var lastIntegrators = _.last(ctrl.integrators, 4);
-    console.log(_.pluck(lastIntegrators, 'activity'))
-
     $timeout(animate, 100);
   };
   animate();

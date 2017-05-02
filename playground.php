@@ -24,22 +24,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     </header>
     
     <article data-ng-controller="playgroundCtrl" class="col-md-6 noselect">
-      <button class="button" data-ng-click="ctrl.doTimeStep()">Time step</button>
-      
       <svg id="mainview" width="1000" height="600">
-
-        <line
-            data-ng-repeat="integrator in ctrl.integrators"
-            x1="{{positionCalculator.sensorX(sensorHovering)}}"
-            y1="{{positionCalculator.sensorY(sensorHovering)}}"
-            x2="{{positionCalculator.integratorX(integrator.i)}}" 
-            y2="{{positionCalculator.integratorY(integrator.i)}}" 
-            class="sensoraxon"
-            data-ng-show="sensorHovering != null"
-            stroke-width="{{10 * ctrl.connectionStrength(sensorHovering, integrator.i)}}"
-            stroke-opacity="{{ctrl.connectionStrength(sensorHovering, integrator.i)}}"
-            >
-        </line>
 
         <circle 
             data-ng-repeat="sensor in ctrl.sensors"
@@ -72,6 +57,14 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             stroke-width="{{output.activity * 5}}"
             >
         </circle>
+        <text
+            data-ng-repeat="output in ctrl.outputs"
+            x="{{positionCalculator.outputX(output.i) - 16}}" 
+            y="{{positionCalculator.outputY(output.i) + 16}}" 
+            class="outputtext"
+            >
+          {{output.activity|number:4}}
+        </text>
         
       </svg>
     </article>

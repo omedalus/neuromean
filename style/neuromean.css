@@ -97,16 +97,33 @@ line.sensoraxon {
 .sensortext {
   font-weight: bold;
   color: #606;
+  fill: #606;
+  stroke: #606;
 }
 .integratortext {
   font-weight: bold;
   color: #228;
+  fill: #228;
+  stroke: #228;
 }
 .lateralinhibitiontext {
   font-weight: bold;
   color: #000;
+  fill: #000;
+  stroke: #000;
 }
 .outputtext {
   font-weight: bold;
   color: #4c4;
+  fill: #4c4;
+  stroke: #4c4;
 }
+
+svg .sensortext,
+svg .integratortext,
+svg .lateralinhibitiontext,
+svg .outputtext {
+  font-weight: normal;
+}
+
+
