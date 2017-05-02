@@ -22,6 +22,27 @@ var Neuron = null;
     self.activityNext = 0;
     self.threshold = 0;
   };
+  
+  Neuron.prototype.setNextActivityLevel = function() {
+    var neuron = this;
+
+    // Activity level gets pulled toward activityNext.
+    var activityDelta = neuron.activityNext - neuron.activity;
+    neuron.activity += activityDelta * .4;
+    if (neuron.activity < 0.0001) {
+      neuron.activity = 0;
+    }
+
+    if (neuron.activity < 0) {
+      neuron.activity = 0;
+    }
+    if (neuron.activity > 1) {
+      neuron.activity = 1;
+    }
+
+    neuron.activityNext = neuron.activity;
+  };
+  
 }());
 
 
@@ -54,31 +75,8 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     _.each(ctrl.outputs, function(output, iOutput) {
       ctrl.outputs[iOutput] = new Neuron('output', iOutput, ctrl.networkStructure.numOutputs);
     });
-  }; 
-
-
-  var setNextActivityLevels = function(neuronArray) {
-    _.each(neuronArray, function(neuron) {
-      // Add a random perturbation to prevent ties.
-      //neuron.activityNext += (Math.random() * .1) - 0.05;
-      
-      // Activity level gets pulled toward activityNext.
-      var activityDelta = neuron.activityNext - neuron.activity;
-      neuron.activity += activityDelta * .4;
-      if (neuron.activity < 0.0001) {
-        neuron.activity = 0;
-      }
-
-      if (neuron.activity < 0) {
-        neuron.activity = 0;
-      }
-      if (neuron.activity > 1) {
-        neuron.activity = 1;
-      }
-
-
-      neuron.activityNext = neuron.activity;
-    });
+    
+    ctrl.neurons = _.union(ctrl.sensors, ctrl.integrators, ctrl.outputs);
   };
   
   var computeStrength = function(deltap, spread) {
@@ -121,14 +119,9 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     });
 
 
-
-    var outputActivityNext = _.pluck(ctrl.outputs, 'activityNext');
-    console.log(outputActivityNext)
-
-
-    setNextActivityLevels(ctrl.sensors);
-    setNextActivityLevels(ctrl.integrators);    
-    setNextActivityLevels(ctrl.outputs);
+    _.each(ctrl.neurons, function(neuron) {
+      neuron.setNextActivityLevel();
+    });
   };
 
 
