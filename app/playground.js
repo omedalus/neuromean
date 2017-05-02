@@ -4,6 +4,28 @@
 
 var app = angular.module("playgroundApp", []); 
 
+var Neuron = null;
+
+(function() {
+  var neuronSerialNum = 1;
+  
+  Neuron = function(layerId, iInLayer, nInLayer) {
+    var self = this;
+    self.serial = neuronSerialNum;
+    neuronSerialNum++;
+    
+    self.layer = layerId;
+    self.i = iInLayer;
+    self.p = iInLayer / (nInLayer - 1);
+
+    self.activity = 0;
+    self.activityNext = 0;
+    self.threshold = 0;
+  };
+}());
+
+
+
 app.controller("playgroundCtrl", function($scope, $timeout) {
   var ctrl = this;
   $scope.ctrl = ctrl;
@@ -36,7 +58,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
       integrator.p = iIntegrator / (ctrl.networkStructure.numIntegrators - 1);
       integrator.activity = 0;
       integrator.activityNext = 0;
-      integrator.threshold = 0;
+      integrator.threshold = -1;
     });
     
     ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
@@ -101,35 +123,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     });
 
 
-    // Integrators sometimes turn on for no reason.
-    _.each(ctrl.integrators, function(integrator) {
-      var integratorSpontaneousActivityProb = 0.05;
-      if (Math.random() > integratorSpontaneousActivityProb) {
-        return;
-      }
-      integrator.activityNext += 1;
-    });
-
-
-    // Integrators laterally excite each other.
-    _.each(ctrl.integrators, function(integrator) {
-      var neighborMax = 0;
-      for (var iNeighbor = integrator.i - 1; 
-           iNeighbor <= integrator.i + 1;
-           iNeighbor += 2)
-      {
-        var neighbor = ctrl.integrators[iNeighbor];
-        if (_.isUndefined(neighbor)) {
-          continue;
-        }
-        neighborMax = Math.max(neighborMax, neighbor.activity);
-      }
-      var lateralExcitationFactor = 1;
-      integrator.activityNext += 
-          Math.max(integrator.activityNext, neighborMax * lateralExcitationFactor);
-    });
-
-
     // Sensors inhibit integrators.
     _.each(ctrl.sensors, function(sensor) {
       _.each(ctrl.integrators, function(integrator) {
@@ -144,22 +137,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
       });
     });
 
-
-    // Integrators adjust their own thresholds to keep themselves quiescent.
-    _.each(ctrl.integrators, function(integrator) {
-      if (integrator.activity > 0) {
-        // Activity causes the threshold to rise rapidly.
-        integrator.threshold += 0.05;
-      }
-      else {
-        // Quiescence causes the threshold to slowly relax.
-        integrator.threshold -= 0.01;
-      }
-      
-      // Threshold can't drop below zero.
-      // That's already modeled by the spontaneous activity.
-      integrator.threshold = Math.max(0, integrator.threshold);
-    });
 
 
     var outputActivityNext = _.pluck(ctrl.outputs, 'activityNext');
