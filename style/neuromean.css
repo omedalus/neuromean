@@ -38,23 +38,28 @@ h1 {
   background-repeat: no-repeat;
 }
 
+circle.neuron {
+  cursor: pointer;
+  stroke: #ff0;
+}
+circle.neuron.isbeingtouched {
+  fill: #e0e;
+}
+
 circle.sensor {
   fill: #606;
-  stroke: #ff0;
-  cursor: pointer;
-}
-circle.sensor.isbeingtouched {
-  fill: #e0e;
 }
 
 circle.integrator {
   fill: #228;
-  stroke: #ff0;
+}
+
+circle.summer {
+  fill: #000;
 }
 
 circle.output {
   fill: #4c4;
-  stroke: #ff0;
 }
 
 line.sensoraxon {

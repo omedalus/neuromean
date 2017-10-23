@@ -4,12 +4,19 @@
 
 var app = angular.module("neuromeanApp", []); 
 
+app.run(function() {
+  app.timer = {
+    step_ms: 1, // How many milliseconds of sim time pass in one step of real time.
+    time_ms: 0 // Current simulation time, in milliseconds.
+  };
+});
+
 app.controller("neuromeanCtrl", function($scope) {
   var ctrl = this;
   $scope.ctrl = ctrl;
   
   ctrl.networkStructure = {
-    numSensors: 30,
+    numSensors: 10,
     numIntegrators: 7,
     numOutputs: 2,
     sensorAxonSpread: 1

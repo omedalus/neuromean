@@ -31,8 +31,9 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             cx="{{positionCalculator.sensorX(sensor.i)}}" 
             cy="{{positionCalculator.sensorY(sensor.i)}}" 
             r="5"
-            class="sensor"
+            class="neuron sensor"
             data-index="{{sensor.i}}"
+            data-serial="{{sensor.serial}}"
             data-ng-class="{isbeingtouched: sensor.isBeingTouched}"
             stroke-width="{{sensor.activity * 5}}"
             >
@@ -43,17 +44,35 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             cx="{{positionCalculator.integratorX(integrator.i)}}" 
             cy="{{positionCalculator.integratorY(integrator.i)}}" 
             r="5"
-            class="integrator"
+            class="neuron integrator"
+            data-index="{{integrator.i}}"
+            data-serial="{{integrator.serial}}"
             stroke-width="{{integrator.activity * 5}}"
             >
         </circle>
+
+
+        <circle 
+            data-ng-repeat="summer in ctrl.summers"
+            cx="{{positionCalculator.summerX(summer.i)}}" 
+            cy="{{positionCalculator.summerY(summer.i)}}" 
+            r="5"
+            class="neuron summer"
+            data-index="{{summer.i}}"
+            data-serial="{{summer.serial}}"
+            stroke-width="{{summer.activity * 5}}"
+            >
+        </circle>
+
 
         <circle 
             data-ng-repeat="output in ctrl.outputs"
             cx="{{positionCalculator.outputX(output.i)}}" 
             cy="{{positionCalculator.outputY(output.i)}}" 
             r="5"
-            class="output"
+            class="neuron output"
+            data-index="{{output.i}}"
+            data-serial="{{output.serial}}"
             stroke-width="{{output.activity * 5}}"
             >
         </circle>
