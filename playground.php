@@ -73,7 +73,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             y="{{positionCalculator.outputY(output.layerPosition.index) + 16}}" 
             class="outputtext"
             >
-          {{output.spikesPerSecond()|number:0}} Hz
+          {{output.spikesPerSecond()|number:1}} Hz
         </text>
         
       </svg>

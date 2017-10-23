@@ -34,12 +34,12 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     _.each(ctrl.outputs, function(output, iOutput) {
       ctrl.outputs[iOutput] = new Neuron('output', iOutput, ctrl.networkStructure.numOutputs);
       ctrl.outputs[iOutput].refractory.duration = 0;
-      ctrl.outputs[iOutput].threshold = 5;
+      ctrl.outputs[iOutput].threshold = 1;
     });
     
     // Connect sensors to outputs.
     _.each(ctrl.sensors, function(sensor) {
-      sensor.projectToLayer(ctrl.outputs, 1, 2);
+      sensor.projectToLayer(ctrl.outputs, .9, 1);
     });
     
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.integrators, ctrl.outputs), 'serial');
@@ -60,7 +60,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     // Receive primary sensory stimulation.
     _.each(ctrl.neurons, function(neuron) {
       if (neuron.isBeingTouched) {
-        let stimAmountPerMs = 1;
+        let stimAmountPerMs = neuron.activityDissipationRate + .2;
         neuron.receiveStimulus(stimAmountPerMs * ctrl.timer.step_ms);
       }
     });
@@ -128,7 +128,8 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   createNetwork();
   
   ctrl.timer = {
-    step_ms: 5, // How many milliseconds of sim time pass in one step of real time.
+    animation_ms: 5, // Ms per animation step.
+    step_ms: 1, // How many milliseconds of sim time pass in one step of real time.
     time_ms: 0, // Current simulation time, in milliseconds.
     step: function() {
       this.time_ms += this.step_ms;
@@ -139,7 +140,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   
   var animate = function() {
     ctrl.doTimeStep(ctrl.timer.step());
-    $timeout(animate, 20);
+    $timeout(animate, ctrl.timer.animation_ms);
   };
   animate();
 });

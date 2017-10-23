@@ -19,7 +19,7 @@ var Neuron = null;
     self.threshold = 1;
     
     // It takes (1/dissipationRate) ms to drain 1 point of activity.
-    self.activityDissipationRate = 1 / 20;
+    self.activityDissipationRate = 1 / 1000;
     
     self.refractory = {
       duration: 10,
@@ -35,7 +35,7 @@ var Neuron = null;
     self.isBeingTouched = false;
     
     self.spikeTimeHistory = [];
-    self.spikeTimeHistoryWindow = 1000;
+    self.spikeTimeHistoryWindow = 250;
     
     self.activity = 0;
   };
@@ -47,6 +47,11 @@ var Neuron = null;
   };
   
   Neuron.prototype.projectToNeuron = function(otherNeuron, strength) {
+    if (otherNeuron === this) {
+      // No self-stimulation allowed! This is a Catholic neural net!
+      return;
+    }
+    
     this.targets[otherNeuron.serial] = {
       neuron: otherNeuron,
       strength: strength
