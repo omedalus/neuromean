@@ -1,66 +1,19 @@
-/* global angular */
 /* global _ */
 /* global $ */
+/* global angular */
+/* global Neuron */
 
 var app = angular.module("playgroundApp", []); 
-
-var Neuron = null;
-
-(function() {
-  var neuronSerialNum = 1;
-  
-  Neuron = function(layerId, iInLayer, nInLayer) {
-    var self = this;
-    self.serial = neuronSerialNum;
-    neuronSerialNum++;
-    
-    self.layer = layerId;
-    self.i = iInLayer;
-    self.p = (nInLayer > 1) ? (iInLayer / (nInLayer - 1)) : .5;
-
-    self.activity = 0;
-    self.activityNext = 0;
-    self.threshold = 0;
-  };
-  
-  Neuron.prototype.setNextActivityLevel = function() {
-    var neuron = this;
-
-    // Activity level gets pulled toward activityNext.
-    var activityDelta = neuron.activityNext - neuron.activity;
-    neuron.activity += activityDelta * .4;
-    if (neuron.activity < 0.0001) {
-      neuron.activity = 0;
-    }
-
-    if (neuron.activity < 0) {
-      neuron.activity = 0;
-    }
-    if (neuron.activity > 1) {
-      neuron.activity = 1;
-    }
-
-    neuron.activityNext = neuron.activity;
-  };
-  
-  Neuron.prototype.strength = function(otherNeuron, spread) {
-    var deltap = Math.abs(this.p - otherNeuron.p);
-    var strength = Math.max(0, 1.0 - deltap/spread);
-    return strength;
-  };
-  
-  
-}());
 
 
 
 app.controller("playgroundCtrl", function($scope, $timeout) {
   var ctrl = this;
-  $scope.ctrl = ctrl;
-  
+  ctrl.isNetworkReady = false;
+
   ctrl.networkStructure = {
-    numSensors: 100,
-    numIntegrators: 30,
+    numSensors: 30,
+    numIntegrators: 10,
     numOutputs: 2,
     sensorAxonSpread: .05,
     integratorLateralSpread: .1
@@ -75,44 +28,47 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     ctrl.integrators = new Array(ctrl.networkStructure.numIntegrators);
     _.each(ctrl.integrators, function(integrator, iIntegrator) {
       ctrl.integrators[iIntegrator] = new Neuron('integrator', iIntegrator, ctrl.networkStructure.numIntegrators);
-      ctrl.integrators[iIntegrator].threshold = -1;
     });
 
     ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
     _.each(ctrl.outputs, function(output, iOutput) {
       ctrl.outputs[iOutput] = new Neuron('output', iOutput, ctrl.networkStructure.numOutputs);
+      ctrl.outputs[iOutput].refractory.duration = 0;
+      ctrl.outputs[iOutput].threshold = 5;
+    });
+    
+    // Connect sensors to outputs.
+    _.each(ctrl.sensors, function(sensor) {
+      sensor.projectToLayer(ctrl.outputs, 1, 2);
     });
     
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.integrators, ctrl.outputs), 'serial');
+    ctrl.isNetworkReady = true;
   };
   
   
-  ctrl.doTimeStep = function() {
+  ctrl.doTimeStep = function(newTime) {
     var outputLOVN = ctrl.outputs[0];
     var outputTN = ctrl.outputs[1];
 
-    // All neurons turn on when touched.
+    // Dissipate previously accumulated activity, and update neuron's
+    // internal chronometer.
     _.each(ctrl.neurons, function(neuron) {
-      neuron.activityNext = -neuron.threshold;
+      neuron.doTimeStep(newTime);
+    });
+    
+    // Receive primary sensory stimulation.
+    _.each(ctrl.neurons, function(neuron) {
       if (neuron.isBeingTouched) {
-        neuron.activityNext = 1;
+        let stimAmountPerMs = 1;
+        neuron.receiveStimulus(stimAmountPerMs * ctrl.timer.step_ms);
       }
     });
-
-
-    // Sensors stimulate outputs (for now).
-    _.each(ctrl.sensors, function(sensor) {
-      _.each(ctrl.outputs, function(output) {
-        var strength = sensor.strength(output, 1);
-        var sensorOutputFactor = 1;
-        output.activityNext += 
-            sensor.activity * strength * sensorOutputFactor;
-      });
-    });
-
-
-    _.each(ctrl.neurons, function(neuron) {
-      neuron.setNextActivityLevel();
+    
+    // Fire neurons that need firing.
+    let neuronsToFire = _.filter(ctrl.neurons, function(neuron) { return neuron.shouldFire(); });
+    _.each(neuronsToFire, function(neuron) {
+      neuron.fire();
     });
   };
 
@@ -166,15 +122,24 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
         var iNeuronSerial = parseInt($(this).attr('data-serial'), 10);
         var neuron = ctrl.neurons[iNeuronSerial];
         neuron.isBeingTouched = !neuron.isBeingTouched;
-        window.neuronLastClicked = neuron;
         $scope.$apply();
       });
 
   createNetwork();
   
+  ctrl.timer = {
+    step_ms: 5, // How many milliseconds of sim time pass in one step of real time.
+    time_ms: 0, // Current simulation time, in milliseconds.
+    step: function() {
+      this.time_ms += this.step_ms;
+      return this.time_ms;
+    }
+  };
+
+  
   var animate = function() {
-    ctrl.doTimeStep();
-    $timeout(animate, 100);
+    ctrl.doTimeStep(ctrl.timer.step());
+    $timeout(animate, 20);
   };
   animate();
 });
