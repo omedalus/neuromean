@@ -19,7 +19,7 @@ var Neuron = null;
     self.threshold = 1;
     
     // It takes (1/dissipationRate) ms to drain 1 point of activity.
-    self.activityDissipationRate = 1 / 1000;
+    self.activityDissipationRate = 1 / 500;
     
     self.refractory = {
       duration: 10,
@@ -35,7 +35,7 @@ var Neuron = null;
     self.isBeingTouched = false;
     
     self.spikeTimeHistory = [];
-    self.spikeTimeHistoryWindow = 250;
+    self.spikeTimeHistoryWindow = 3000;
     
     self.activity = 0;
   };
@@ -79,6 +79,11 @@ var Neuron = null;
     this.spikeTimeHistory.push(this.lastTime);
 
     this.refractory.timeComplete = this.lastTime + this.refractory.duration;
+    
+    if (this.layer == 'output' && this.layerPosition.index == 1) {
+      let sinceLast = this.lastTime - this.spikeTimeHistory[this.spikeTimeHistory.length - 2];
+      console.log('Output_1 fired at ' + this.lastTime + ', ' + sinceLast + ' since previously.')
+    }
   };
   
   Neuron.prototype.spikesPerSecond = function() {

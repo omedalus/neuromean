@@ -33,13 +33,12 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     ctrl.outputs = new Array(ctrl.networkStructure.numOutputs);
     _.each(ctrl.outputs, function(output, iOutput) {
       ctrl.outputs[iOutput] = new Neuron('output', iOutput, ctrl.networkStructure.numOutputs);
-      ctrl.outputs[iOutput].refractory.duration = 0;
-      ctrl.outputs[iOutput].threshold = 1;
+      ctrl.outputs[iOutput].activityDissipationRate = 1 / 1000;
     });
     
     // Connect sensors to outputs.
     _.each(ctrl.sensors, function(sensor) {
-      sensor.projectToLayer(ctrl.outputs, .9, 1);
+      sensor.projectToLayer(ctrl.outputs, .3, .8);
     });
     
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.integrators, ctrl.outputs), 'serial');
@@ -60,7 +59,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     // Receive primary sensory stimulation.
     _.each(ctrl.neurons, function(neuron) {
       if (neuron.isBeingTouched) {
-        let stimAmountPerMs = neuron.activityDissipationRate + .2;
+        let stimAmountPerMs = neuron.activityDissipationRate + .1;
         neuron.receiveStimulus(stimAmountPerMs * ctrl.timer.step_ms);
       }
     });
