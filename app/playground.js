@@ -36,9 +36,12 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
       ctrl.outputs[iOutput].activityDissipationRate = 1 / 1000;
     });
     
-    // Connect sensors to outputs.
+    let outputLOVN = ctrl.outputs[0];
+    let outputTN = ctrl.outputs[1];    
+    
+    // Sensors project proportionally to TN
     _.each(ctrl.sensors, function(sensor) {
-      sensor.projectToLayer(ctrl.outputs, .3, .8);
+      sensor.projectToNeuron(outputTN, sensor.layerPosition.fraction);
     });
     
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.integrators, ctrl.outputs), 'serial');
@@ -47,8 +50,8 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   
   
   ctrl.doTimeStep = function(newTime) {
-    var outputLOVN = ctrl.outputs[0];
-    var outputTN = ctrl.outputs[1];
+    let outputLOVN = ctrl.outputs[0];
+    let outputTN = ctrl.outputs[1];
 
     // Dissipate previously accumulated activity, and update neuron's
     // internal chronometer.
