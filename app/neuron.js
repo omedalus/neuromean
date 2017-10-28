@@ -1,6 +1,6 @@
 /* global _ */
 
-var Neuron = null;
+let Neuron = null;
 
 (function() {
   var neuronSerialNum = 1;
@@ -16,28 +16,25 @@ var Neuron = null;
       fraction: (nInLayer > 1) ? (iInLayer / (nInLayer - 1)) : .5
     };
 
-    self.threshold = 1;
-    
-    // It takes (1/dissipationRate) ms to drain 1 point of activity.
-    self.activityDissipationRate = 1 / 500;
-    
-    self.refractory = {
-      duration: 10,
-      timeComplete: 0
-    };
-
     /// Postsynaptic target neurons, indexed by their serial numbers.
     /// Each entry is of the format:
     /// <serial>: {neuron: <Neuron>, strength: <number>}
     self.targets = {};
 
-    self.lastTime = null;
+    self.threshold = 0;
+
     self.isBeingTouched = false;
-    
-    self.spikeTimeHistory = [];
-    self.spikeTimeHistoryWindow = 3000;
-    
     self.activity = 0;
+    self.activityNext = 0;
+  };
+  
+  Neuron.createLayer = function(layerName, numNeuronsInLayer) {
+    let layer = new Array(numNeuronsInLayer);
+    _.times(numNeuronsInLayer, function(iInLayer) {
+      let neuron = new Neuron(layerName, iInLayer, numNeuronsInLayer);
+      layer[iInLayer] = neuron;
+    });    
+    return layer;
   };
   
   Neuron.prototype.strength = function(otherNeuron, spread) {
@@ -61,65 +58,80 @@ var Neuron = null;
   Neuron.prototype.projectToLayer = function(otherLayer, baseStrength, spread) {
     let self = this;
     _.each(otherLayer, function(otherNeuron) {
-      let strength = baseStrength * self.strength(otherNeuron, spread);
+      let strength = baseStrength;
+      if (_.isNumber(spread)) {
+        strength *= self.strength(otherNeuron, spread);
+      }
       self.projectToNeuron(otherNeuron, strength);
     });
   };
   
-  Neuron.prototype.shouldFire = function() {
-    return this.activity > this.threshold;
-  };
-  
-  Neuron.prototype.fire = function() {
-    this.activity = 0;
-    _.each(this.targets, function(target) {
-      target.neuron.receiveStimulus(target.strength);
+  Neuron.projectLayerToLayer = function(fromLayer, toLayer, baseStrength, spread) {
+    _.each(fromLayer, function(neuron) {
+      neuron.projectToLayer(toLayer, baseStrength, spread);
     });
-
-    this.spikeTimeHistory.push(this.lastTime);
-
-    this.refractory.timeComplete = this.lastTime + this.refractory.duration;
-    
-    if (this.layer == 'output' && this.layerPosition.index == 1) {
-      let sinceLast = this.lastTime - this.spikeTimeHistory[this.spikeTimeHistory.length - 2];
-      console.log('Output_1 fired at ' + this.lastTime + ', ' + sinceLast + ' since previously.')
-    }
-  };
-  
-  Neuron.prototype.spikesPerSecond = function() {
-    let hertz = 1000 * this.spikeTimeHistory.length / this.spikeTimeHistoryWindow;
-    return hertz;
   };
   
   Neuron.prototype.receiveStimulus = function(stimAmount) {
-    if (this.lastTime < this.refractory.timeComplete) {
-      // Can't receive stimulus during refractory period.
-      stimAmount = 0;
-    }
-    
-    this.activity += stimAmount;
-    return this.activity;
+    this.activityNext += stimAmount;
+    return this.activityNext;
+  };
+  
+  Neuron.prototype.propagateActivity = function() {
+    let self = this;
+    _.each(self.targets, function(target) {
+      target.neuron.receiveStimulus(target.strength * self.activity);
+    });
   };
   
   Neuron.prototype.doTimeStep = function(newTime) {
-    if (!this.lastTime) {
-      this.lastTime = newTime;
-      return;
-    }
-    
-    let msStep = newTime - this.lastTime;
-    this.activity -= this.activityDissipationRate * msStep;
-    
-    if (this.activity < 0) {
-      this.activity = 0;
-    }
-    
-    let historyCutoff = newTime - this.spikeTimeHistoryWindow;
-    this.spikeTimeHistory = _.filter(this.spikeTimeHistory, function(spikeTime) {
-      return spikeTime > historyCutoff;
-    });
-    
-    this.lastTime = newTime;
+    this.activityNext -= this.threshold;
+    this.activity = Math.min(1, Math.max(0, this.activityNext));
+    this.activityNext = 0;
   };
   
+  
+  Neuron.prototype.drawPosition = function() {
+    return {
+      x: 0,
+      y: 0
+    };
+  };
 }());
+
+
+
+let SensorNeuron = null;
+
+(function() {
+  SensorNeuron = function(iInLayer, nInLayer) {
+    Neuron.call(this, 'sensor', iInLayer, nInLayer);
+  };
+  
+  SensorNeuron.prototype = new Neuron;
+  
+  SensorNeuron.createLayer = function(numNeuronsInLayer) {
+    let layer = new Array(numNeuronsInLayer);
+    _.times(numNeuronsInLayer, function(iInLayer) {
+      let neuron = new SensorNeuron(iInLayer, numNeuronsInLayer);
+      layer[iInLayer] = neuron;
+    });    
+    return layer;
+  };
+  
+  SensorNeuron.prototype.drawPosition = function() {
+    let f = this.layerPosition.fraction;
+    let xStart = 40;
+    let xEnd = 900;
+    let yBottom = 120;
+    let yRise = 60;
+    let xNorm = (2 * f) - 1;
+    return {
+      x: ((xEnd - xStart) * f)  + xStart,
+      y: yBottom - yRise * xNorm * xNorm
+    };
+  };
+}());
+
+
+

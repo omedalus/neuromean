@@ -9,8 +9,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
   <head>
     <?php include 'php/html_head_common.php'; ?>
     
-    <script src="app/neuron.js?nocache=<?php echo time(); ?>"></script>
-    <script src="app/playground.js?nocache=<?php echo time(); ?>"></script>
+    <script src="app/neuron.js"></script>
+    <script src="app/playground.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style/neuromean.css" />
     <title>Neuro Playground</title>
@@ -32,9 +32,9 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
         <circle 
             data-ng-repeat="sensor in ctrl.sensors"
-            cx="{{positionCalculator.sensorX(sensor.layerPosition.index)}}" 
-            cy="{{positionCalculator.sensorY(sensor.layerPosition.index)}}" 
-            r="{{3 + sensor.activity * 3}}"
+            cx="{{sensor.drawPosition().x}}" 
+            cy="{{sensor.drawPosition().y}}" 
+            r="{{5 + sensor.activity * 3}}"
             class="neuron sensor"
             data-index="{{sensor.layerPosition.index}}"
             data-serial="{{sensor.serial}}"
@@ -55,11 +55,21 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             >
         </circle>
 
+        <circle 
+            cx="425" 
+            cy="300" 
+            r="5"
+            class="neuron summer"
+            data-index="0"
+            data-serial="{{ctrl.summer.serial}}"
+            stroke-width="{{ctrl.summer.activity * 5}}"
+            >
+        </circle>
 
         <circle 
             data-ng-repeat="output in ctrl.outputs"
-            cx="{{positionCalculator.outputX(output.layerPosition.index)}}" 
-            cy="{{positionCalculator.outputY(output.layerPosition.index)}}" 
+            cx="{{positionCalculator.outputX(output)}}" 
+            cy="{{positionCalculator.outputY(output)}}" 
             r="5"
             class="neuron output"
             data-index="{{output.layerPosition.index}}"
@@ -67,14 +77,16 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             stroke-width="{{output.activity * 5}}"
             >
         </circle>
+        <!--
         <text
             data-ng-repeat="output in ctrl.outputs"
-            x="{{positionCalculator.outputX(output.layerPosition.index) - 16}}" 
-            y="{{positionCalculator.outputY(output.layerPosition.index) + 16}}" 
+            x="{{positionCalculator.outputX(output) - 16}}" 
+            y="{{positionCalculator.outputY(output) + 16}}" 
             class="outputtext"
             >
-          {{output.spikesPerSecond()|number:1}} Hz
+          {{output.activity|number:2}}
         </text>
+        -->
         
       </svg>
     </article>
