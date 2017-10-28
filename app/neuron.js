@@ -55,20 +55,23 @@ let Neuron = null;
     };
   };
   
-  Neuron.prototype.projectToLayer = function(otherLayer, baseStrength, spread) {
+  Neuron.prototype.projectToLayer = function(otherLayer, baseStrength, spread, invert) {
     let self = this;
     _.each(otherLayer, function(otherNeuron) {
       let strength = baseStrength;
       if (_.isNumber(spread)) {
         strength *= self.strength(otherNeuron, spread);
       }
+      if (invert) {
+        strength = 1 - strength;
+      }
       self.projectToNeuron(otherNeuron, strength);
     });
   };
   
-  Neuron.projectLayerToLayer = function(fromLayer, toLayer, baseStrength, spread) {
+  Neuron.projectLayerToLayer = function(fromLayer, toLayer, baseStrength, spread, invert) {
     _.each(fromLayer, function(neuron) {
-      neuron.projectToLayer(toLayer, baseStrength, spread);
+      neuron.projectToLayer(toLayer, baseStrength, spread, invert);
     });
   };
   
@@ -85,6 +88,10 @@ let Neuron = null;
   };
   
   Neuron.prototype.doTimeStep = function(newTime) {
+    if (this.layer === 'output' && this.nerve==='lovn' && this.layerPosition.index == 19) {
+      console.log(this.activityNext)
+    }
+    
     this.activityNext -= this.threshold;
     this.activity = Math.min(1, Math.max(0, this.activityNext));
     this.activityNext = 0;
@@ -134,4 +141,70 @@ let SensorNeuron = null;
 }());
 
 
+
+
+let OutputNeuron = null;
+
+(function() {
+  OutputNeuron = function(nerve, iInLayer, nInLayer) {
+    Neuron.call(this, 'output', iInLayer, nInLayer);
+    this.nerve = nerve;
+    this.threshold = iInLayer * .2;
+    
+    let nerveFraction = {
+      lovn: 0,
+      tn: 1
+    };
+    this.layerPosition.fraction = nerveFraction[nerve];
+  };
+  
+  OutputNeuron.prototype = new Neuron;
+  
+  OutputNeuron.createLayer = function(nerve, numNeuronsInLayer) {
+    let layer = new Array(numNeuronsInLayer);
+    _.times(numNeuronsInLayer, function(iInLayer) {
+      let neuron = new OutputNeuron(nerve, iInLayer, numNeuronsInLayer);
+      layer[iInLayer] = neuron;
+    });    
+    return layer;
+  };
+  
+  OutputNeuron.prototype.drawPosition = function() {
+    let nerveX = {
+      lovn: 120,
+      tn: 720
+    };    
+    return {
+      x: nerveX[this.nerve] || 470,
+      y: 200 + this.layerPosition.index * 10
+    };
+  };
+
+}());
+
+
+
+let GlobalNeuron = null;
+
+(function() {
+  GlobalNeuron = function(layerName) {
+    Neuron.call(this, layerName, 0, 1);
+    this.layerPosition.fraction = .5;
+  };
+  
+  GlobalNeuron.prototype = new Neuron;
+  
+  GlobalNeuron.createLayer = function(layerName) {
+    let layer = [new GlobalNeuron(layerName)];
+    return layer;
+  };
+  
+  GlobalNeuron.prototype.drawPosition = function() {
+    return {
+      x: 425,
+      y: 300
+    };
+  };
+
+}());
 

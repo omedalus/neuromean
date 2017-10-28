@@ -2,7 +2,9 @@
 /* global $ */
 /* global angular */
 /* global Neuron */
+/* global GlobalNeuron */
 /* global SensorNeuron */
+/* global OutputNeuron */
 
 var app = angular.module("playgroundApp", []); 
 
@@ -20,30 +22,20 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
 
   var createNetwork = function() {
     ctrl.sensors = SensorNeuron.createLayer(ctrl.networkStructure.numSensors);
-    ctrl.integrators = Neuron.createLayer('integrator', ctrl.networkStructure.numIntegrators);
-    ctrl.summer = new Neuron('summer', 0, 1);
+    ctrl.summers = GlobalNeuron.createLayer('summer');
 
-
-    let lovnAxons = new Array(ctrl.networkStructure.numOutputs);
-    let tnAxons = new Array(ctrl.networkStructure.numOutputs);
-    _.times(ctrl.networkStructure.numOutputs, function(iOutput) {
-      let lovnAxon = new Neuron('lovn', iOutput, ctrl.networkStructure.numOutputs);
-      let tnAxon = new Neuron('tn', ctrl.networkStructure.numOutputs - iOutput - 1, ctrl.networkStructure.numOutputs);
-      lovnAxon.threshold = .1 * iOutput;
-      tnAxon.threshold = .1 * iOutput;
-      lovnAxons[iOutput] = lovnAxon;
-      tnAxons[iOutput] = tnAxon;
-    });
+    let lovnAxons = OutputNeuron.createLayer('lovn', ctrl.networkStructure.numOutputs);
+    let tnAxons = OutputNeuron.createLayer('tn', ctrl.networkStructure.numOutputs);
     ctrl.outputs = _.union(lovnAxons, tnAxons);
     
+    Neuron.projectLayerToLayer(ctrl.sensors, lovnAxons, .8, 1, false);
+    Neuron.projectLayerToLayer(ctrl.sensors, tnAxons, .8, 1, false);
+
+    Neuron.projectLayerToLayer(ctrl.sensors, ctrl.summers, .05, null, false);
+    Neuron.projectLayerToLayer(ctrl.summers, ctrl.outputs, -5, null, false);
 
 
-    Neuron.projectLayerToLayer(ctrl.sensors, ctrl.outputs, 1, .9);
-    //Neuron.projectLayerToLayer(ctrl.sensors, [ctrl.summer], .05, null);
-    //Neuron.projectLayerToLayer([ctrl.summer], ctrl.outputs, -10, null);
-
-
-    ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.integrators, [ctrl.summer], ctrl.outputs), 'serial');
+    ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.summers, ctrl.outputs), 'serial');
     ctrl.isNetworkReady = true;
   };
   
@@ -81,17 +73,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
       return 200;
     },
 
-    outputX: function(neuron) {
-      let neuronLayerX = {
-        lovn: 120,
-        tn: 720
-      };
-      return neuronLayerX[neuron.layer] || 470;
-    },
-    
-    outputY: function(neuron) {
-      return 200 + 100 * neuron.threshold;
-    }
+
   };
   
   $('#mainview').
