@@ -16,26 +16,19 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
 
   ctrl.networkStructure = {
     numSensors: 50,
-    numIntegrators: 0,
     numOutputs: 20
   };
 
   var createNetwork = function() {
     ctrl.sensors = SensorNeuron.createLayer(ctrl.networkStructure.numSensors);
-    ctrl.summers = GlobalNeuron.createLayer('summer');
 
     let lovnAxons = OutputNeuron.createLayer('lovn', ctrl.networkStructure.numOutputs);
     let tnAxons = OutputNeuron.createLayer('tn', ctrl.networkStructure.numOutputs);
     ctrl.outputs = _.union(lovnAxons, tnAxons);
     
-    Neuron.projectLayerToLayer(ctrl.sensors, lovnAxons, .2, 1, false);
-    Neuron.projectLayerToLayer(ctrl.sensors, tnAxons, .2, 1, false);
+    OutputNeuron.innervateLayerFromLayer(lovnAxons, ctrl.sensors, 1, false);
 
-    Neuron.projectLayerToLayer(ctrl.sensors, ctrl.summers, .2, null, false);
-    Neuron.projectLayerToLayer(ctrl.summers, ctrl.outputs, -5, null, false);
-
-
-    ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.summers, ctrl.outputs), 'serial');
+    ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.outputs), 'serial');
     ctrl.isNetworkReady = true;
   };
   
@@ -96,7 +89,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   createNetwork();
   
   ctrl.timer = {
-    animation_ms: 20, // Real ms per animation step.
+    animation_ms: 200, // Real ms per animation step.
     step_ms: 1, // How many milliseconds of sim time pass in one step of real time.
     time_ms: 0, // Current simulation time, in milliseconds.
     step: function() {

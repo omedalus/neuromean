@@ -21,7 +21,7 @@ let Neuron = null;
     /// <serial>: {neuron: <Neuron>, strength: <number>}
     self.targets = {};
 
-    self.threshold = 1;
+    self.threshold = 0;
 
     self.activity = 0;
     self.activityNext = 0;
@@ -145,13 +145,6 @@ let OutputNeuron = null;
   OutputNeuron = function(nerve, iInLayer, nInLayer) {
     Neuron.call(this, 'output', iInLayer, nInLayer);
     this.nerve = nerve;
-    this.threshold = iInLayer * .2;
-    
-    let nerveFraction = {
-      lovn: 0,
-      tn: 1
-    };
-    this.layerPosition.fraction = nerveFraction[nerve];
   };
   
   OutputNeuron.prototype = new Neuron;
@@ -163,6 +156,21 @@ let OutputNeuron = null;
       layer[iInLayer] = neuron;
     });    
     return layer;
+  };
+  
+  OutputNeuron.prototype.innervateFromLayer = function(layer, baseStrength, reverse) {
+    let self = this;
+    let numInputs = Math.ceil(layer.length * (1 - this.layerPosition.fraction));
+    _.times(numInputs, function(iInput) {
+      let input = reverse ? layer[layer.length - iInput - 1] : layer[iInput];
+      input.projectToNeuron(self, baseStrength);
+    });
+  };
+  
+  OutputNeuron.innervateLayerFromLayer = function(targetLayer, sourceLayer, baseStrength, reverse) {
+    _.each(targetLayer, function(targetNeuron) {
+      targetNeuron.innervateFromLayer(sourceLayer, baseStrength, reverse);
+    });
   };
   
   OutputNeuron.prototype.drawPosition = function() {
