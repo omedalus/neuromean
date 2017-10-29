@@ -21,9 +21,8 @@ let Neuron = null;
     /// <serial>: {neuron: <Neuron>, strength: <number>}
     self.targets = {};
 
-    self.threshold = 0;
+    self.threshold = 1;
 
-    self.isBeingTouched = false;
     self.activity = 0;
     self.activityNext = 0;
   };
@@ -88,13 +87,8 @@ let Neuron = null;
   };
   
   Neuron.prototype.doTimeStep = function(newTime) {
-    if (this.layer === 'output' && this.nerve==='lovn' && this.layerPosition.index == 19) {
-      console.log(this.activityNext)
-    }
-    
-    this.activityNext -= this.threshold;
     this.activity = Math.min(1, Math.max(0, this.activityNext));
-    this.activityNext = 0;
+    this.activityNext = -this.threshold;
   };
   
   
@@ -113,6 +107,8 @@ let SensorNeuron = null;
 (function() {
   SensorNeuron = function(iInLayer, nInLayer) {
     Neuron.call(this, 'sensor', iInLayer, nInLayer);
+    this.threshold = 0;
+    this.isBeingTouched = false;
   };
   
   SensorNeuron.prototype = new Neuron;

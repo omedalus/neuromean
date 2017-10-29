@@ -28,10 +28,10 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     let tnAxons = OutputNeuron.createLayer('tn', ctrl.networkStructure.numOutputs);
     ctrl.outputs = _.union(lovnAxons, tnAxons);
     
-    Neuron.projectLayerToLayer(ctrl.sensors, lovnAxons, .8, 1, false);
-    Neuron.projectLayerToLayer(ctrl.sensors, tnAxons, .8, 1, false);
+    Neuron.projectLayerToLayer(ctrl.sensors, lovnAxons, .2, 1, false);
+    Neuron.projectLayerToLayer(ctrl.sensors, tnAxons, .2, 1, false);
 
-    Neuron.projectLayerToLayer(ctrl.sensors, ctrl.summers, .05, null, false);
+    Neuron.projectLayerToLayer(ctrl.sensors, ctrl.summers, .2, null, false);
     Neuron.projectLayerToLayer(ctrl.summers, ctrl.outputs, -5, null, false);
 
 
@@ -42,9 +42,9 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   
   ctrl.doTimeStep = function(newTime) {
     // Receive primary sensory stimulation.
-    _.each(ctrl.neurons, function(neuron) {
-      if (neuron.isBeingTouched) {
-        neuron.receiveStimulus(1);
+    _.each(ctrl.sensors, function(sensor) {
+      if (sensor.isBeingTouched) {
+        sensor.receiveStimulus(1);
       }
     });
     
@@ -96,7 +96,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   createNetwork();
   
   ctrl.timer = {
-    animation_ms: 100, // Ms per animation step.
+    animation_ms: 20, // Real ms per animation step.
     step_ms: 1, // How many milliseconds of sim time pass in one step of real time.
     time_ms: 0, // Current simulation time, in milliseconds.
     step: function() {
