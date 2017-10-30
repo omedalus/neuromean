@@ -5,6 +5,7 @@ let Neuron = null;
 (function() {
   var neuronSerialNum = 1;
   
+
   Neuron = function(layerId, iInLayer, nInLayer) {
     var self = this;
     self.serial = neuronSerialNum;
@@ -21,11 +22,11 @@ let Neuron = null;
     /// <serial>: {neuron: <Neuron>, strength: <number>}
     self.targets = {};
 
-    self.threshold = 0;
-
     self.activity = 0;
     self.activityNext = 0;
   };
+  
+  Neuron.activityChangePerStep = .2;
   
   Neuron.createLayer = function(layerName, numNeuronsInLayer) {
     let layer = new Array(numNeuronsInLayer);
@@ -87,8 +88,14 @@ let Neuron = null;
   };
   
   Neuron.prototype.doTimeStep = function(newTime) {
-    this.activity = Math.min(1, Math.max(0, this.activityNext));
-    this.activityNext = -this.threshold;
+    let activityNext = Math.min(1, Math.max(0, this.activityNext));
+    this.activity = 
+        (Neuron.activityChangePerStep * activityNext) + 
+        ((1 - Neuron.activityChangePerStep) * this.activity);
+    if (this.activity < 0.0001 || !_.isNumber(this.activity)) {
+      this.activity = 0;
+    }
+    this.activityNext = 0;
   };
   
   
@@ -173,7 +180,7 @@ let OutputNeuron = null;
     });
   };
   
-  OutputNeuron.computeOverlapLength = function(n1, n2) {
+  OutputNeuron.computeOverlapLength = function(n1, n2, isSameNerve) {
     let n1Length = 1 - n1.layerPosition.fraction;
     let n2Length = 1 - n2.layerPosition.fraction;
     
@@ -181,7 +188,9 @@ let OutputNeuron = null;
       return 0;
     }
     
-    let overlapLength = Math.max(0, n1Length + n2Length - 1);
+    let overlapLength = isSameNerve ? 
+        Math.min(n1Length, n2Length) :
+        Math.max(0, n1Length + n2Length - 1);
     if (overlapLength <= 0) {
       return 0;
     }
@@ -189,18 +198,17 @@ let OutputNeuron = null;
     return overlapLength;
   };
   
-  OutputNeuron.prototype.computeOverlapLength = function(otherNeuron) {
-    return OutputNeuron.computeOverlapLength(this, otherNeuron);
+  OutputNeuron.prototype.computeOverlapLength = function(otherNeuron, isSameNerve) {
+    return OutputNeuron.computeOverlapLength(this, otherNeuron, isSameNerve);
   };
   
-  OutputNeuron.prototype.relativeFractionOfSpanInhibitedBy = function(otherNeuron, gracelength) {
-    let overlapLength = this.computeOverlapLength(otherNeuron);
-    overlapLength = Math.max(0, overlapLength - gracelength);
+  OutputNeuron.prototype.proportionOfSpanCoveredBy = function(otherNeuron, isSameNerve) {
+    let overlapLength = this.computeOverlapLength(otherNeuron, isSameNerve);
     if (overlapLength <= 0) {
       return 0;
     }
     
-    let relative = overlapLength / this.layerPosition.fraction;
+    let relative = overlapLength / (1 - this.layerPosition.fraction);
 
     // relative should NEVER be >1, and should throw an error
     // if it is. But with floating point math, who knows. Best to be careful.
@@ -226,9 +234,14 @@ let OutputNeuron = null;
 let GlobalNeuron = null;
 
 (function() {
-  GlobalNeuron = function(layerName) {
+  GlobalNeuron = function(layerName, drawX, drawY) {
     Neuron.call(this, layerName, 0, 1);
     this.layerPosition.fraction = .5;
+    
+    this._drawPositionXY = {
+      x: drawX,
+      y: drawY
+    };
   };
   
   GlobalNeuron.prototype = new Neuron;
@@ -239,9 +252,10 @@ let GlobalNeuron = null;
   };
   
   GlobalNeuron.prototype.drawPosition = function() {
+    let self = this;
     return {
-      x: 425,
-      y: 300
+      x: self._drawPositionXY.x,
+      y: self._drawPositionXY.y
     };
   };
 
