@@ -43,17 +43,23 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
             >
         </circle>
 
-        <!--
         <text
-            data-ng-repeat="output in ctrl.outputs"
-            x="{{positionCalculator.outputX(output) - 16}}" 
-            y="{{positionCalculator.outputY(output) + 16}}" 
+            x="104" 
+            y="186" 
             class="outputtext"
             >
-          {{output.activity|number:2}}
+          {{ctrl.getTotalOutputNerveActivity('lovn')|number:2}}
         </text>
-        -->
-        
+
+        <text
+            x="704" 
+            y="186" 
+            class="outputtext"
+            >
+          {{ctrl.getTotalOutputNerveActivity('tn')|number:2}}
+        </text>
+
+
       </svg>
     </article>
   </body>

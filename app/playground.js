@@ -26,14 +26,28 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     let tnAxons = OutputNeuron.createLayer('tn', ctrl.networkStructure.numOutputs);
     ctrl.outputs = _.union(lovnAxons, tnAxons);
     
-    OutputNeuron.innervateLayerFromLayer(lovnAxons, ctrl.sensors, 1, false);
+    OutputNeuron.innervateLayerFromLayer(lovnAxons, ctrl.sensors, .2, false);
+    OutputNeuron.innervateLayerFromLayer(tnAxons, ctrl.sensors, .2, true);
 
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.outputs), 'serial');
     ctrl.isNetworkReady = true;
   };
   
+  ctrl.getTotalOutputNerveActivity = function(nerveName) {
+    let sum = ctrl.outputs.reduce(function(runningSum, neuron) {
+      if (neuron.nerve === nerveName) {
+        return runningSum + neuron.activity;
+      } else {
+        return runningSum;
+      }
+    }, 0);
+    return sum;
+  };
+  
   
   ctrl.doTimeStep = function(newTime) {
+    console.log(ctrl.getTotalOutputNerveActivity('lovn'));
+    
     // Receive primary sensory stimulation.
     _.each(ctrl.sensors, function(sensor) {
       if (sensor.isBeingTouched) {
