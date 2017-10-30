@@ -173,6 +173,41 @@ let OutputNeuron = null;
     });
   };
   
+  OutputNeuron.computeOverlapLength = function(n1, n2) {
+    let n1Length = 1 - n1.layerPosition.fraction;
+    let n2Length = 1 - n2.layerPosition.fraction;
+    
+    if (n1Length <= 0 || n2Length <= 0) {
+      return 0;
+    }
+    
+    let overlapLength = Math.max(0, n1Length + n2Length - 1);
+    if (overlapLength <= 0) {
+      return 0;
+    }
+    
+    return overlapLength;
+  };
+  
+  OutputNeuron.prototype.computeOverlapLength = function(otherNeuron) {
+    return OutputNeuron.computeOverlapLength(this, otherNeuron);
+  };
+  
+  OutputNeuron.prototype.relativeFractionOfSpanInhibitedBy = function(otherNeuron, gracelength) {
+    let overlapLength = this.computeOverlapLength(otherNeuron);
+    overlapLength = Math.max(0, overlapLength - gracelength);
+    if (overlapLength <= 0) {
+      return 0;
+    }
+    
+    let relative = overlapLength / this.layerPosition.fraction;
+
+    // relative should NEVER be >1, and should throw an error
+    // if it is. But with floating point math, who knows. Best to be careful.
+    relative = Math.min(1, relative);
+    return relative;
+  };
+  
   OutputNeuron.prototype.drawPosition = function() {
     let nerveX = {
       lovn: 120,

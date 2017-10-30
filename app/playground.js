@@ -26,8 +26,26 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     let tnAxons = OutputNeuron.createLayer('tn', ctrl.networkStructure.numOutputs);
     ctrl.outputs = _.union(lovnAxons, tnAxons);
     
-    OutputNeuron.innervateLayerFromLayer(lovnAxons, ctrl.sensors, .2, false);
-    OutputNeuron.innervateLayerFromLayer(tnAxons, ctrl.sensors, .2, true);
+    OutputNeuron.innervateLayerFromLayer(lovnAxons, ctrl.sensors, .5, false);
+    OutputNeuron.innervateLayerFromLayer(tnAxons, ctrl.sensors, .5, true);
+    
+    // Wiring the lateral inhibition gets slightly complicated.
+    // We consider how much overlap each side gets.
+    let baseInhibition = -.5;
+    _.each(lovnAxons, function(lovnAxon) {
+      _.each(tnAxons, function(tnAxon) {
+        let tnPortionCoveredByLovn = tnAxon.relativeFractionOfSpanInhibitedBy(lovnAxon, .5);
+        let lovnPortionCoveredByTn = lovnAxon.relativeFractionOfSpanInhibitedBy(tnAxon, .5);
+        
+        console.log(`(${lovnAxon.layerPosition.index}, ${tnAxon.layerPosition.index}) -> ` +
+            `(${tnPortionCoveredByLovn}, ${lovnPortionCoveredByTn})`);
+            
+        lovnAxon.projectToNeuron(tnAxon,
+            baseInhibition * tnPortionCoveredByLovn);
+        tnAxon.projectToNeuron(lovnAxon,
+            baseInhibition * lovnPortionCoveredByTn);
+      });
+    });
 
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.outputs), 'serial');
     ctrl.isNetworkReady = true;
@@ -46,8 +64,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   
   
   ctrl.doTimeStep = function(newTime) {
-    console.log(ctrl.getTotalOutputNerveActivity('lovn'));
-    
     // Receive primary sensory stimulation.
     _.each(ctrl.sensors, function(sensor) {
       if (sensor.isBeingTouched) {
