@@ -21,14 +21,12 @@ let Neuron = null;
     /// Each entry is of the format:
     /// <serial>: {neuron: <Neuron>, strength: <number>}
     self.targets = {};
-    
-    self.threshold = 1;
-    self.activityDissipationPerMs = .01;
 
     self.activity = 0;
     self.activityNext = 0;
-    self.lastTime = 0;
   };
+  
+  Neuron.activityChangePerStep = .2;
   
   Neuron.createLayer = function(layerName, numNeuronsInLayer) {
     let layer = new Array(numNeuronsInLayer);
@@ -82,21 +80,22 @@ let Neuron = null;
     return this.activityNext;
   };
   
-  Neuron.prototype.checkFire = function() {
+  Neuron.prototype.propagateActivity = function() {
     let self = this;
-    if (self.activity < this.threshold) {
-      return;
-    }
     _.each(self.targets, function(target) {
-      target.neuron.receiveStimulus(target.strength);
+      target.neuron.receiveStimulus(target.strength * self.activity);
     });
-    self.activityNext = 0;
   };
   
   Neuron.prototype.doTimeStep = function(newTime) {
-    let msElapsed = newTime - this.lastTime;
-    this.activity = Math.max(0, 
-        this.activityNext - (this.activityDissipationPerMs * msElapsed) );
+    let activityNext = Math.min(1, Math.max(0, this.activityNext));
+    this.activity = 
+        (Neuron.activityChangePerStep * activityNext) + 
+        ((1 - Neuron.activityChangePerStep) * this.activity);
+    if (this.activity < 0.0001 || !_.isNumber(this.activity)) {
+      this.activity = 0;
+    }
+    this.activityNext = 0;
   };
   
   
