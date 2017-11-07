@@ -9,8 +9,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
   <head>
     <?php include 'php/html_head_common.php'; ?>
     
-    <script src="app/neuron-temporal.js"></script>
-    <script src="app/playground.js"></script>
+    <script src="app/coarse/neuron-coarse.js"></script>
+    <script src="app/coarse/playground-coarse.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style/neuromean.css" />
     <title>Neuro Playground</title>

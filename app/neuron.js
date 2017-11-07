@@ -83,20 +83,29 @@ let Neuron = null;
   };
   
   Neuron.prototype.checkFire = function() {
-    let self = this;
-    if (self.activity < this.threshold) {
-      return;
+    if (this.isBeingTouched && this.activity > this.threshold) {
+      console.log(this.activity + ' ' + this.threshold);
     }
+    
+    let self = this;
+    if (self.activity < self.threshold) {
+      return false;
+    }
+    debugger;
     _.each(self.targets, function(target) {
       target.neuron.receiveStimulus(target.strength);
     });
     self.activityNext = 0;
+    console.log('firing')
+    return true;
   };
   
   Neuron.prototype.doTimeStep = function(newTime) {
     let msElapsed = newTime - this.lastTime;
-    this.activity = Math.max(0, 
-        this.activityNext - (this.activityDissipationPerMs * msElapsed) );
+    let activityDi
+    
+    this.activity = Math.max(0, this.activityNext);
+    this.activityNext = activityNext - (this.activityDissipationPerMs * msElapsed) );
   };
   
   
@@ -115,7 +124,6 @@ let SensorNeuron = null;
 (function() {
   SensorNeuron = function(iInLayer, nInLayer) {
     Neuron.call(this, 'sensor', iInLayer, nInLayer);
-    this.threshold = 0;
     this.isBeingTouched = false;
   };
   

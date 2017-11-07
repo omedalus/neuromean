@@ -16,7 +16,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
 
   ctrl.networkStructure = {
     numSensors: 50,
-    numOutputs: 20
+    numOutputs: 0
   };
 
   var createNetwork = function() {
@@ -32,42 +32,13 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
 
     // Wiring the lateral inhibition gets slightly complicated.
     // We consider how much overlap each side gets.
-
-    /*
-    let baseInhibition = -.1;
-    _.each(lovnAxons, function(lovnAxon) {
-      _.each(tnAxons, function(tnAxon) {
-        let tnPortionCoveredByLovn = tnAxon.proportionOfSpanCoveredBy(lovnAxon, false);
-        let lovnPortionCoveredByTn = lovnAxon.proportionOfSpanCoveredBy(tnAxon, false);
-        
-        lovnAxon.projectToNeuron(tnAxon,
-            baseInhibition * tnPortionCoveredByLovn);
-        tnAxon.projectToNeuron(lovnAxon,
-            baseInhibition * lovnPortionCoveredByTn);
-      });
-    });
-    
-    let localInhibitionMagnifier = .5;
-    _.each(lovnAxons, function(lovnAxonFrom) {
-      _.each(lovnAxons, function(lovnAxonTo) {
-        lovnAxonFrom.projectToNeuron(lovnAxonTo, 
-            baseInhibition * localInhibitionMagnifier * lovnAxonTo.proportionOfSpanCoveredBy(lovnAxonFrom, true));
-      });
-    });
-    _.each(tnAxons, function(tnAxonFrom) {
-      _.each(tnAxons, function(tnAxonTo) {
-        tnAxonFrom.projectToNeuron(tnAxonTo, 
-            baseInhibition * localInhibitionMagnifier * tnAxonTo.proportionOfSpanCoveredBy(tnAxonFrom, true));
-      });
-    });
-    */
     
     
     let gabaNeuron = new GlobalNeuron('gaba', 400, 300);
     ctrl.globalNeurons = [gabaNeuron];
     
-    //Neuron.projectLayerToLayer(ctrl.sensors, [gabaNeuron], .1, null, false);
-    //Neuron.projectLayerToLayer([gabaNeuron], ctrl.outputs, -3.5, null, false);
+    Neuron.projectLayerToLayer(ctrl.sensors, [gabaNeuron], .1, null, false);
+    Neuron.projectLayerToLayer([gabaNeuron], ctrl.outputs, -3.5, null, false);
 
 
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.globalNeurons, ctrl.outputs), 'serial');
@@ -88,15 +59,17 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   
   ctrl.doTimeStep = function(newTime) {
     // Receive primary sensory stimulation.
+    console.log('tick')
     _.each(ctrl.sensors, function(sensor) {
       if (sensor.isBeingTouched) {
-        sensor.receiveStimulus(1);
+        sensor.receiveStimulus(.1);
+        console.log(sensor.activityNext + ' ' + sensor.threshold)
       }
     });
     
     // Propagate activity.
     _.each(ctrl.neurons, function(neuron) {
-      neuron.propagateActivity();
+      neuron.checkFire();
     });
     
     // Advance next activity to current activity level.
@@ -106,22 +79,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   };
 
 
-  $scope.positionCalculator = {
-
-    
-    integratorX: function(i) {
-      var xStart = 80;
-      var xEnd = 760;
-      return ((xEnd - xStart) * i / ctrl.networkStructure.numIntegrators) + xStart;
-    },
-    
-    integratorY: function(i) {
-      return 200;
-    },
-
-
-  };
-  
   $('#mainview').
       on('mouseenter', 'circle.sensor', function() {
         var iSensor = parseInt($(this).attr('data-index'), 10);

@@ -66,8 +66,8 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     let gabaNeuron = new GlobalNeuron('gaba', 400, 300);
     ctrl.globalNeurons = [gabaNeuron];
     
-    //Neuron.projectLayerToLayer(ctrl.sensors, [gabaNeuron], .1, null, false);
-    //Neuron.projectLayerToLayer([gabaNeuron], ctrl.outputs, -3.5, null, false);
+    Neuron.projectLayerToLayer(ctrl.sensors, [gabaNeuron], .1, null, false);
+    Neuron.projectLayerToLayer([gabaNeuron], ctrl.outputs, -3.5, null, false);
 
 
     ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.globalNeurons, ctrl.outputs), 'serial');

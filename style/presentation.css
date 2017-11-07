@@ -1,0 +1,71 @@
+body {
+  background: #001;
+  color: #C80;
+  font-family: 'Garamond';
+}
+
+video#bgvid {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  background: url(polina.jpg) no-repeat;
+  background-size: cover; 
+  opacity: .2;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+header {
+  text-align: center;
+}
+
+.roundedscreen {
+  background: black;
+  border: 2px solid #004;
+  border-radius: 10px;
+  margin: 1px;
+  display: inline-block;
+  overflow: hidden;
+  box-shadow: 1px 1px 5px 5px rgba(0,0,0,.5);
+}
+
+h1 {
+  color: #C80;
+  font-family: 'Garamond';
+  font-weight: bold;
+  text-shadow: 1px 1px 1px #000;
+  white-space: nowrap;
+}
+
+.sidebox {
+  height: 200px;
+  width: 320px;
+}
+
+.sidebox video {
+  width: 100%;
+  height: 100%;
+}
+
+article {
+  height: 680px;
+  width: calc(100% - 340px);
+  float: right;
+}
