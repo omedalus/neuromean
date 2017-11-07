@@ -14,21 +14,10 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
     <link rel="stylesheet" type="text/css" href="style/presentation.css" />
     <title>Nerve Activity Proportional To Stimulus Position</title>
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
   </head>
 
   <body class="container">
-    <video playsinline autoplay muted loop poster="polina.jpg" id="bgvid">
+    <video playsinline autoplay muted loop poster="golgicells.jpg" id="bgvid">
         <source src="img/12925532.mp4" type="video/mp4">
     </video>    
     
@@ -43,12 +32,12 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
     <div class="sidebar">
       <div class="sidebox roundedscreen">
-        <video playsinline autoplay muted loop poster="polina.jpg" id="slugfeeding">
+        <video playsinline autoplay muted loop poster="img/bytryingital.jpg" id="slugfeeding">
             <source src="img/Pleurobranchaea-feeding-2.mp4" type="video/mp4">
         </video>
     </div>
       <div class="sidebox roundedscreen">
-        Slug neuro pic
+        <img src="img/_DSC5325.jpg" id="slugface"></img>
       </div>
       <div class="sidebox roundedscreen">
         Slug diagram
