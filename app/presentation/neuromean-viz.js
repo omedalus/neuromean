@@ -49,7 +49,16 @@ let neuromeanVizDirective = function($interval) {
         };
         
         // Restore approximation of old touchings.
-        
+        _.each(scope.papillae, function(papilla) {
+          let lowestDiff = null;
+          _.each(oldTouchings, function(oldTouching) {
+            let thisDiff = Math.abs(oldTouching.fraction - papilla.fraction);
+            if (_.isNull(lowestDiff) || thisDiff < lowestDiff) {
+              lowestDiff = thisDiff;
+              papilla.isBeingTouched = oldTouching.isBeingTouched;
+            }
+          });
+        });
   
         scope.papillae.push(papilla);
       });
