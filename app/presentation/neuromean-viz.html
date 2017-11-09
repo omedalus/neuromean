@@ -4,22 +4,65 @@
       preserveAspectRatio="xMidYMid meet"
     >
     
-    <linearGradient id="fill_slugbody" x2="0%" y2="100%">
-      <stop stop-color="#986" offset="10%" />
-      <stop stop-color="#631" offset="80%" />
-    </linearGradient>
+    <defs>
+      <linearGradient id="fill_slugbody" x2="0%" y2="100%">
+        <stop stop-color="#986" offset="10%" />
+        <stop stop-color="#631" offset="80%" />
+      </linearGradient>
+      
+      <linearGradient id="fill_papilla" x2="0%" y2="100%">
+        <stop stop-color="#ccc" offset="10%" />
+        <stop stop-color="#ffc" offset="20%" />
+        <stop stop-color="#986" offset="80%" />
+      </linearGradient>    
 
-    <symbol id="figure_slugbody">
-      <path
-          fill="url(#fill_slugbody)"
-          d="M-10,100 L950,100
-             C1000,100 1000,180 950,200
-             C600,300 800,300 900,510
-             L800,510 L-10,500Z"
-          />
-    </symbol>
+      <symbol id="figure_slugbody">
+        <path
+            fill="url(#fill_slugbody)"
+            d="M-10,100 
+               L950,100
+               C1000,100 1000,180 950,200
+               C600,300 800,300 900,510
+               L800,510 
+               L-10,500
+               Z"
+            />
+      </symbol>
+  
+      <symbol id="figure_papilla">
+        <path
+            stroke="#882"
+            stroke-width="2"
+            fill="url(#fill_papilla)"
+            d="M10,60
+               l20,-30
+               l0,-20
+               l5,0
+               l5,5
+               l5,-5
+               l5,0
+               l0,20
+               l20,30
+               Z">
+      </symbol>
 
+      
+    </defs>
+    
+
+
+
+    <use href="#figure_papilla" 
+        data-ng-repeat="papilla in papillae"
+        ng-attr-x="{{-50 + (1+papilla.index) * (900 / (numPapillae+1))}}" 
+        y="50"
+        ></use>
+    
+    
     <use href="#figure_slugbody"></use>
+
+      
+    </path>
 
   </svg>
   
@@ -29,11 +72,11 @@
         <label>Papillae</label>
       </td>
       <td>
-        <input type="range" min="5" max="30"
+        <input type="range" min="7" max="30"
             data-ng-model="numPapillae">
       </td>
       <td>
-        {{numPapillae}}
+        {{papillae.length}}
       </td>
     </tr>
   </table>
