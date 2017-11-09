@@ -114,7 +114,7 @@
             data-ng-attr-d="{{nerveFiber.graphics.path}}">
         </path>
         <path data-ng-repeat="nerveFiber in nerveFibers"
-            stroke="rgba(255,128,128,.1)" stroke-width="1" fill="rgba(255,128,128,.6)"
+            stroke="rgba(255,128,128,.2)" stroke-width="1" fill="rgba(255,128,128,.8)"
             data-ng-attr-d="{{nerveFiber.graphics.path}}"
             data-ng-attr-opacity="{{nerveFiber.graphics.opacity()}}">
         </path>
@@ -190,7 +190,7 @@
               data-ng-model="baseSensitivityPct">
         </td>
         <td>
-          {{baseReachPct}}
+          {{baseSensitivityPct}}
         </td>
       </tr>
 
@@ -199,7 +199,7 @@
           <label>Nerve fiber sensivity increment (%)</label>
         </td>
         <td>
-          <input type="range" min="1" max="200"
+          <input type="range" min="1" max="100"
               data-ng-model="sensitivityIncrementPct">
         </td>
         <td>

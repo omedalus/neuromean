@@ -76,15 +76,17 @@ let neuromeanVizDirective = function($interval) {
         let baseReach = (scope.baseReachPct || 0) / 100;
         let baseSensitivity = (scope.baseSensitivityPct || 0) / 100;
         let sensitivityIncrement = (scope.sensitivityIncrementPct || 100) / 100;
-        
+
         fiber.reach = Math.min(1, (1 - fiber.fraction) + baseReach);
         fiber.sensitivity = baseSensitivity + (sensitivityIncrement * (1 - fiber.reach));
+        
+        fiber.suppressivePower = (1 - fiber.fraction);
         
         fiber.graphics = {
           path: fiberPath(fiber),
           y: 62 + (fiber.index * 10),
           r: 3 + 5*fiber.sensitivity,
-          opacity: function() { return Math.sqrt(fiber.activity); }
+          opacity: function() { return 2 * Math.sqrt(fiber.activity); }
         };
         
         fiber.canReachPapilla = function(papilla) {
@@ -112,14 +114,24 @@ let neuromeanVizDirective = function($interval) {
     scope.numPapillae = 20;
     scope.numNerveFibers = 10;
     scope.baseReachPct = 0;
-    scope.baseSensitivityPct = 0;
-    scope.sensitivityIncrementPct = 100;
+    scope.baseSensitivityPct = 30;
+    scope.sensitivityIncrementPct = 50;
 
 
     scope.simulationSpeed = 0.2;
     
+    
+    scope.getTotalOutputNerveActivity = function() {
+      let total = _.reduce(scope.nerveFibers, function(memo, fiber) {
+        return memo + fiber.activity;
+      }, 0);
+      return total;
+    };
 
     let timestep = function() {
+      console.log(scope.getTotalOutputNerveActivity())
+      
+      // Get input from papillae.
       let nerveActivities = _.map(scope.nerveFibers, function(fiber) {
         let activity = _.reduce(scope.papillae, function(memo, papilla) {
           if (!papilla.isBeingTouched || !fiber.canReachPapilla(papilla)) {
@@ -131,10 +143,26 @@ let neuromeanVizDirective = function($interval) {
         return activity;
       });
       
+      // Compute lateral inhibition.
+      _.each(scope.nerveFibers, function(fiber) {
+        let suppression = fiber.activity * fiber.suppressivePower;
+        _.each(nerveActivities, function(targetActivity, iTarget) {
+          if (iTarget === fiber.index) {
+            return;
+          }
+          nerveActivities[iTarget] -= suppression;
+        });
+      });
+      
+      // Update nerve objects with new activity levels.
       _.each(scope.nerveFibers, function(fiber, iFiber) {
+        let newActivity = nerveActivities[iFiber];
+        newActivity = Math.min(newActivity, 1);
+        newActivity = Math.max(newActivity, 0);
+        
         fiber.activity = 
             ((1 - scope.simulationSpeed) * fiber.activity) +
-            (scope.simulationSpeed * nerveActivities[iFiber]);
+            (scope.simulationSpeed * newActivity);
       });
     };
     $interval(timestep, 100);
