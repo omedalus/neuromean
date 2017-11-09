@@ -11,13 +11,16 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     
     <script src="app/presentation/neuron.js"></script>
     <script src="app/presentation/presentation.js"></script>
+    <script src="app/presentation/neuromean-viz.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style/presentation.css" />
+    <link rel="stylesheet" type="text/css" href="style/neuromean-viz.css" />
+    
     <title>Nerve Activity Proportional To Stimulus Position</title>
   </head>
 
-  <body class="container">
-    <video playsinline autoplay muted loop poster="golgicells.jpg" id="bgvid">
+  <body class="container-fluid">
+    <video playsinline autoplay muted loop poster="img/golgicells.jpg" id="bgvid">
         <source src="img/bgvid/shutterstock_v2406011.mov" type="video/mp4">
     </video>    
     
@@ -26,7 +29,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       <h1>Nerve Activity Proportional To Stimulus Position</h1>
     </header>
 
-    <article class="roundedscreen">
+    <article class="roundedscreen" data-neuromean-viz="">
       asdfsd
     </article>
 
@@ -43,9 +46,11 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
         Slug diagram
       </div>
     </div>
-    
-
   </body>
-  
+
+
+  <script>
+    document.getElementById('slugfeeding').playbackRate = 5;
+  </script>  
 </html>
     

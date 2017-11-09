@@ -1,0 +1,40 @@
+<div class="neuromean-viz">
+  <svg 
+      viewbox="0 0 1000 500"
+      preserveAspectRatio="xMidYMid meet"
+    >
+    
+    <linearGradient id="fill_slugbody" x2="0%" y2="100%">
+      <stop stop-color="#986" offset="10%" />
+      <stop stop-color="#631" offset="80%" />
+    </linearGradient>
+
+    <symbol id="figure_slugbody">
+      <path
+          fill="url(#fill_slugbody)"
+          d="M-10,100 L950,100
+             C1000,100 1000,180 950,200
+             C600,300 800,300 900,510
+             L800,510 L-10,500Z"
+          />
+    </symbol>
+
+    <use href="#figure_slugbody"></use>
+
+  </svg>
+  
+  <table class="neuromean-viz-controls">
+    <tr>
+      <td>
+        <label>Papillae</label>
+      </td>
+      <td>
+        <input type="range" min="5" max="30"
+            data-ng-model="numPapillae">
+      </td>
+      <td>
+        {{numPapillae}}
+      </td>
+    </tr>
+  </table>
+</div>

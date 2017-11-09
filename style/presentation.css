@@ -1,5 +1,5 @@
 body {
-  background: #001;
+  background: #200;
   color: #C80;
   font-family: 'Garamond';
 }
@@ -17,9 +17,8 @@ video#bgvid {
   -moz-transform: translateX(-50%) translateY(-50%);
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  background: url(polina.jpg) no-repeat;
+  background: url('/img/golgicells.jpg') repeat-x;
   background-size: cover; 
-  opacity: .2;
 }
 
 .noselect {
@@ -52,6 +51,11 @@ h1 {
   font-weight: bold;
   text-shadow: 1px 1px 1px #000;
   white-space: nowrap;
+  background-color: rgba(0,0,0, .5);
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: inline-block;
+  width: 100%;
 }
 
 .sidebox {
@@ -65,9 +69,18 @@ h1 {
 }
 
 article {
-  height: 680px;
   width: calc(100% - 340px);
   float: right;
+}
+
+/* --- CUSTOM VIDEO SIZING --- */
+
+#slugfeeding {
+  width: 140%;
+  height: 140%;
+  position: relative;
+  left: -20%;
+  top: -20%;
 }
 
 
@@ -100,4 +113,12 @@ article {
   100% {
   }
   
+}
+
+/* --- MEDIA --- */
+
+@media (max-width: 900px) {
+  h1 {
+    letter-spacing: -2px;
+  }
 }
