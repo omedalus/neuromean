@@ -1,3 +1,13 @@
 .neuromean-viz svg {
   background: #cc8;
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.4), 
+      rgba(0, 0, 0, 0.4)
+    ),
+    url('/img/58030158-dark-sand-texture-background.jpg') repeat;
+}
+
+.neuromean-viz-papilla {
+  cursor: pointer;
 }

@@ -16,6 +16,12 @@
         <stop stop-color="#986" offset="80%" />
       </linearGradient>    
 
+      <filter id="dropshadow" x="0" y="0" width="200%" height="200%">
+        <feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
+        <feGaussianBlur result="blurOut" in="offOut" stdDeviation="30" />
+        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+      </filter>
+
       <symbol id="figure_slugbody">
         <path
             fill="url(#fill_slugbody)"
@@ -31,7 +37,7 @@
   
       <symbol id="figure_papilla">
         <path
-            stroke="#882"
+            stroke="#642"
             stroke-width="2"
             fill="url(#fill_papilla)"
             d="M10,60
@@ -52,14 +58,17 @@
 
 
 
-    <use href="#figure_papilla" 
-        data-ng-repeat="papilla in papillae"
-        ng-attr-x="{{-50 + (1+papilla.index) * (900 / (numPapillae+1))}}" 
-        y="50"
-        ></use>
-    
-    
-    <use href="#figure_slugbody"></use>
+    <g filter="url(#dropshadow)">
+      <use href="#figure_papilla" 
+          data-ng-repeat="papilla in papillae"
+          ng-attr-x="{{-50 + (1+papilla.index) * (900 / (numPapillae+1))}}" 
+          y="50"
+          class="neuromean-viz-papilla"
+          ></use>
+      
+      
+      <use href="#figure_slugbody"></use>
+    </g>
 
       
     </path>
