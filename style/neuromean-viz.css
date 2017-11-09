@@ -17,11 +17,26 @@
 }
 
 .neuromean-viz .neuromean-viz-eeg {
-  background: yellow;
+  background-image: url('/img/defib-paper.jpg');
+  background-size: cover;
+  
   position: absolute;
-  top: 60%;
+  bottom: 5%;
   width: 25%;
   left: 20%;
+  
+  border: 2px solid #444;
+  border-radius: 10px;
+  box-shadow: 2px 4px 8px 8px rgba(0,0,0,.3);
+}
+
+.neuromean-viz img {
+  width: 10%;
+  position: absolute;
+  z-index: 10;
+  right: 0;
+  top: calc(50% - 5px);
+  transition: top 5ms;
 }
 
 .neuromean-viz .neuromean-viz-controls {

@@ -130,9 +130,50 @@ let neuromeanVizDirective = function($interval) {
       return total;
     };
 
-    let timestep = function() {
-      console.log(scope.getTotalOutputNerveActivity())
+
+
+    let eegPaperOffset = 0;
+    let eegActivityHistory = [0];
+
+
+    let addEEGdata = function() {
+      let eegDiv = $('.neuromean-viz-eeg', element);
+      eegDiv.css('background-position-x', `${-eegPaperOffset}px`);
+      eegPaperOffset += 1;
+      eegPaperOffset %= 1000000;
       
+      let totalNerveActivity = scope.getTotalOutputNerveActivity() + 0.01;
+      let currentEEGlevel = (.5 + .5*Math.random()) * totalNerveActivity;
+      currentEEGlevel *= 20;
+      if (eegActivityHistory[0] > 0) {
+        currentEEGlevel *= -1;
+      }
+
+      eegActivityHistory.unshift(currentEEGlevel);
+      while (eegActivityHistory.length > 1000) {
+        eegActivityHistory.pop();
+      }
+      
+      let needle = $('img', eegDiv);
+      let needlePct = 50 + currentEEGlevel;
+      needle.css({
+        top: `calc(${needlePct}% - 5px)`
+      });
+    };
+    
+    scope.getEEGPolylinePoints = function() {
+      let pointstr = '';
+      _.each(eegActivityHistory, function(activityLevel, pointIndex) {
+        let thisPoint = ` ${pointIndex},${activityLevel} `;
+        pointstr += thisPoint;
+      });
+      return pointstr;
+    };
+
+
+    let timestep = function() {
+      addEEGdata();
+
       // Get input from papillae.
       let nerveActivities = _.map(scope.nerveFibers, function(fiber) {
         let activity = _.reduce(scope.papillae, function(memo, papilla) {
