@@ -16,7 +16,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
 
   ctrl.networkStructure = {
     numSensors: 50,
-    numOutputs: 20
+    numOutputs: 10
   };
 
   var createNetwork = function() {
@@ -29,12 +29,15 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     let baseSensitivity = .3;
     let sensitivityIncrement = .1;
     _.each(lovnAxons, function(lovnAxon) {
+
       let reach = baseReach + (1 - lovnAxon.layerPosition.fraction);
+      let lovnAxonSensitivity = baseSensitivity + sensitivityIncrement * lovnAxon.layerPosition.fraction;
+      
       _.each(ctrl.sensors, function(sensor) {
         if (sensor.layerPosition.fraction > reach) {
           return;
         }
-        sensor.projectToNeuron(lovnAxon, baseSensitivity + sensitivityIncrement * (1 - reach));
+        sensor.projectToNeuron(lovnAxon, lovnAxonSensitivity);
       });
     });
     

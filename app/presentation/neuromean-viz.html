@@ -22,6 +22,15 @@
         <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
       </filter>
 
+      <filter id="dummygray" x="0" y="0" width="200%" height="200%">
+        <feColorMatrix type="matrix" in="SourceGraphic"
+             values=".2 .1 .1 0 0 
+                     .1 .2 .1 0 0 
+                     .1 .1 .2 0 0 
+                     1 1 1 0 0"/>
+      </filter>
+      
+
       <symbol id="figure_slugbody">
         <path
             fill="url(#fill_slugbody)"
@@ -58,35 +67,68 @@
 
 
 
-    <g filter="url(#dropshadow)">
+    <g filter="url(#dropshadow)" class="neuromean-viz-svg-slugbody">
+      <!-- dummy papillae -->
+      <g filter="url(#dummygray)">
+        <use href="#figure_papilla" 
+            data-ng-repeat="papilla in papillae"
+            data-ng-attr-x="{{200 - (papillae.length-papilla.index) * (700 / (numPapillae+1))}}" 
+            y="50"
+            class="neuromean-viz-dummy-papilla"
+            ></use>
+      </g>
+      
+      <!-- real papillae -->
       <use href="#figure_papilla" 
           data-ng-repeat="papilla in papillae"
-          ng-attr-x="{{-50 + (1+papilla.index) * (900 / (numPapillae+1))}}" 
+          data-ng-attr-x="{{200 + (papilla.index) * (700 / (numPapillae+1))}}" 
           y="50"
           class="neuromean-viz-papilla"
           ></use>
       
-      
+      <!-- slug body -->
       <use href="#figure_slugbody"></use>
     </g>
 
-      
-    </path>
+    <g class="neuromean-viz-svg-nerve">
+      <path data-ng-repeat="nerveFiber in nerveFibers"
+          stroke="#226" stroke-width="1" fill="#446"
+          data-ng-attr-d="{{nerveFiber.graphics.path()}}">
+      </path>
+    </g>    
 
   </svg>
+
+  <div class="neuromean-viz-controls">
+    <table>
+      
+      <tr>
+        <td>
+          <label>Papillae</label>
+        </td>
+        <td>
+          <input type="range" min="7" max="30"
+              data-ng-model="numPapillae">
+        </td>
+        <td>
+          {{papillae.length}}
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          <label>Nerve fibers</label>
+        </td>
+        <td>
+          <input type="range" min="4" max="15"
+              data-ng-model="numNerveFibers">
+        </td>
+        <td>
+          {{numNerveFibers}}
+        </td>
+      </tr>
+      
+    </table>
+  </div>
   
-  <table class="neuromean-viz-controls">
-    <tr>
-      <td>
-        <label>Papillae</label>
-      </td>
-      <td>
-        <input type="range" min="7" max="30"
-            data-ng-model="numPapillae">
-      </td>
-      <td>
-        {{papillae.length}}
-      </td>
-    </tr>
-  </table>
 </div>
