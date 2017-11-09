@@ -5,15 +5,19 @@
 (function() {
 
 let fiberPath = function(fiber) {
-  let path = `M${10 + fiber.index * 10},360 
-             l0,-200 
+  let gap = fiber.index * 10;
+  let reachlen = fiber.reach * 900;
+  
+  let path = `M${10 + gap},360 
+             l0,${-200 + gap} 
              s0,-50 50,-50
-             l900,0 
+             l${reachlen},0 
              l-20,5
-             l-890,0
+             l${-reachlen+10},0
              s-25,0 -35,35
-             l0,200
+             l0,${200 - gap}
              Z`;
+
   return path;
 };
   
@@ -44,7 +48,7 @@ let link = function(scope, element, attrs) {
       let baseSensitivity = scope.baseSensitivity || 0;
       let sensitivityIncrement = scope.sensitivityIncrement || 1;
       
-      fiber.reach = fiber.fraction + baseReach;
+      fiber.reach = Math.min(1, (1 - fiber.fraction) + baseReach);
       fiber.sensitivity = baseSensitivity + (sensitivityIncrement * fiber.fraction);
       
       fiber.graphics = {
