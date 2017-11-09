@@ -162,12 +162,12 @@
             filter="url(#dropshadow-tiny)"
             ></rect>
         <rect 
-            stroke="rgba(255,128,128,.2)" stroke-width="1" fill="rgba(255,128,128,.8)"
+            fill="rgba(255,128,128,.8)"
             data-ng-attr-opacity="{{nerveFiber.graphics.opacity()}}"
             x="5" 
-            data-ng-attr-y="{{198 + 10*nerveFiber.index}}"
+            data-ng-attr-y="{{199 + 10*nerveFiber.index}}"
             data-ng-attr-width="{{5 + nerveFibers.length*10}}"
-            data-ng-attr-height="{{2 + 4*nerveFiber.suppressivePower}}"
+            data-ng-attr-height="{{.5 + 4*nerveFiber.suppressivePower}}"
             rx="2"
             ry="2"
             ></rect>
@@ -239,7 +239,7 @@
 
       <tr>
         <td>
-          <label>Nerve fiber sensivity baseline (%)</label>
+          <label>Nerve fiber sensitivity baseline (%)</label>
         </td>
         <td>
           <input type="range" min="1" max="100"
@@ -252,7 +252,7 @@
 
       <tr>
         <td>
-          <label>Nerve fiber sensivity gradient (%)</label>
+          <label>Nerve fiber sensitivity gradient (%)</label>
         </td>
         <td>
           <input type="range" min="1" max="100"
