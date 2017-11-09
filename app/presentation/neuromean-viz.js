@@ -10,14 +10,14 @@ let fiberPath = function(fiber) {
   reachlen = Math.min(reachlen, 850);
   reachlen -= gap;
   
-  let path = `M${10 + gap},310 
-             l0,${-200 + gap} 
+  let path = `M${10 + gap},340 
+             l0,${-230 + gap} 
              s0,-50 50,-50
              l${reachlen},0 
              l-20,5
              l${-reachlen+10},0
              s-25,0 -35,35
-             l0,${200 - gap}
+             l0,${230 - gap}
              Z`;
 
   return path;
@@ -85,7 +85,7 @@ let neuromeanVizDirective = function($interval) {
         fiber.graphics = {
           path: fiberPath(fiber),
           y: 62 + (fiber.index * 10),
-          r: 3 + 5*fiber.sensitivity,
+          r: 2 + 10*fiber.sensitivity,
           opacity: function() { return 2 * Math.sqrt(fiber.activity); }
         };
         
@@ -119,6 +119,8 @@ let neuromeanVizDirective = function($interval) {
 
 
     scope.simulationSpeed = 0.2;
+    scope.timestepMs = 100;
+
     
     
     scope.getTotalOutputNerveActivity = function() {
@@ -165,7 +167,7 @@ let neuromeanVizDirective = function($interval) {
             (scope.simulationSpeed * newActivity);
       });
     };
-    $interval(timestep, 100);
+    scope.animationIntervalHandle = $interval(timestep, scope.timestepMs);
   };
 
   return {
