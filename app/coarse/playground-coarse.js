@@ -23,54 +23,31 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     ctrl.sensors = SensorNeuron.createLayer(ctrl.networkStructure.numSensors);
 
     let lovnAxons = OutputNeuron.createLayer('lovn', ctrl.networkStructure.numOutputs);
-    let tnAxons = OutputNeuron.createLayer('tn', ctrl.networkStructure.numOutputs);
-    ctrl.outputs = _.union(lovnAxons, tnAxons);
+    ctrl.outputs = _.union(lovnAxons);
     
-    OutputNeuron.innervateLayerFromLayer(lovnAxons, ctrl.sensors, 1, false);
-    OutputNeuron.innervateLayerFromLayer(tnAxons, ctrl.sensors, 1, true);
-
-
-    // Wiring the lateral inhibition gets slightly complicated.
-    // We consider how much overlap each side gets.
-
-    /*
-    let baseInhibition = -.1;
+    let baseReach = 0;
+    let baseSensitivity = .3;
+    let sensitivityIncrement = .1;
     _.each(lovnAxons, function(lovnAxon) {
-      _.each(tnAxons, function(tnAxon) {
-        let tnPortionCoveredByLovn = tnAxon.proportionOfSpanCoveredBy(lovnAxon, false);
-        let lovnPortionCoveredByTn = lovnAxon.proportionOfSpanCoveredBy(tnAxon, false);
-        
-        lovnAxon.projectToNeuron(tnAxon,
-            baseInhibition * tnPortionCoveredByLovn);
-        tnAxon.projectToNeuron(lovnAxon,
-            baseInhibition * lovnPortionCoveredByTn);
+      let reach = baseReach + (1 - lovnAxon.layerPosition.fraction);
+      _.each(ctrl.sensors, function(sensor) {
+        if (sensor.layerPosition.fraction > reach) {
+          return;
+        }
+        sensor.projectToNeuron(lovnAxon, baseSensitivity + sensitivityIncrement * (1 - reach));
       });
     });
     
-    let localInhibitionMagnifier = .5;
-    _.each(lovnAxons, function(lovnAxonFrom) {
+    let baseInhibition = -1;
+    _.each([lovnAxons[0]], function(lovnAxonFrom) {
+      let suppressivePower = (1 - lovnAxonFrom.layerPosition.fraction);
       _.each(lovnAxons, function(lovnAxonTo) {
-        lovnAxonFrom.projectToNeuron(lovnAxonTo, 
-            baseInhibition * localInhibitionMagnifier * lovnAxonTo.proportionOfSpanCoveredBy(lovnAxonFrom, true));
+        //let portionCoverage = lovnAxonTo.proportionOfSpanCoveredBy(lovnAxonFrom, true);
+        lovnAxonFrom.projectToNeuron(lovnAxonTo, baseInhibition * suppressivePower);
       });
     });
-    _.each(tnAxons, function(tnAxonFrom) {
-      _.each(tnAxons, function(tnAxonTo) {
-        tnAxonFrom.projectToNeuron(tnAxonTo, 
-            baseInhibition * localInhibitionMagnifier * tnAxonTo.proportionOfSpanCoveredBy(tnAxonFrom, true));
-      });
-    });
-    */
-    
-    
-    let gabaNeuron = new GlobalNeuron('gaba', 400, 300);
-    ctrl.globalNeurons = [gabaNeuron];
-    
-    Neuron.projectLayerToLayer(ctrl.sensors, [gabaNeuron], .1, null, false);
-    Neuron.projectLayerToLayer([gabaNeuron], ctrl.outputs, -3.5, null, false);
 
-
-    ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.globalNeurons, ctrl.outputs), 'serial');
+    ctrl.neurons = _.indexBy(_.union(ctrl.sensors, ctrl.outputs), 'serial');
     ctrl.isNetworkReady = true;
   };
   
@@ -105,22 +82,6 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
     });
   };
 
-
-  $scope.positionCalculator = {
-
-    
-    integratorX: function(i) {
-      var xStart = 80;
-      var xEnd = 760;
-      return ((xEnd - xStart) * i / ctrl.networkStructure.numIntegrators) + xStart;
-    },
-    
-    integratorY: function(i) {
-      return 200;
-    },
-
-
-  };
   
   $('#mainview').
       on('mouseenter', 'circle.sensor', function() {
@@ -142,7 +103,7 @@ app.controller("playgroundCtrl", function($scope, $timeout) {
   createNetwork();
   
   ctrl.timer = {
-    animation_ms: 200, // Real ms per animation step.
+    animation_ms: 20, // Real ms per animation step.
     step_ms: 1, // How many milliseconds of sim time pass in one step of real time.
     time_ms: 0, // Current simulation time, in milliseconds.
     step: function() {

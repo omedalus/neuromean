@@ -136,6 +136,9 @@ let SensorNeuron = null;
     let yBottom = 120;
     let yRise = 60;
     let xNorm = (2 * f) - 1;
+    if (f > .5) {
+      yBottom += 20;
+    }
     return {
       x: ((xEnd - xStart) * f)  + xStart,
       y: yBottom - yRise * xNorm * xNorm
