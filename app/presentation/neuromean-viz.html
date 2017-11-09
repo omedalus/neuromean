@@ -117,7 +117,7 @@
         <path data-ng-repeat="nerveFiber in nerveFibers"
             stroke="rgba(255,128,128,.1)" stroke-width="1" fill="rgba(255,128,128,.6)"
             data-ng-attr-d="{{nerveFiber.graphics.path}}"
-            data-ng-attr-opacity="{{nerveFiber.activity}}">
+            data-ng-attr-opacity="{{nerveFiber.graphics.opacity()}}">
         </path>
         
       </g>
