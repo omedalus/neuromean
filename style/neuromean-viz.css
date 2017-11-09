@@ -1,4 +1,8 @@
-.neuromean-viz svg {
+.neuromean-viz {
+  position: relative;
+}
+
+.neuromean-viz .neuromean-viz-neural-network {
   background: #cc8;
   background:
     linear-gradient(
@@ -10,4 +14,24 @@
 
 .neuromean-viz-papilla {
   cursor: pointer;
+}
+
+.neuromean-viz .neuromean-viz-eeg {
+  background: yellow;
+  position: absolute;
+  top: 60%;
+  width: 25%;
+  left: 20%;
+}
+
+.neuromean-viz .neuromean-viz-controls {
+  background-color: rgba(0,0,0,.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+  white-space: nowrap;
+  
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  display: inline-block;
 }
