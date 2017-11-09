@@ -29,6 +29,14 @@
                      .1 .1 .2 0 0 
                      1 1 1 0 0"/>
       </filter>
+
+      <filter id="papillatouched" x="0" y="0" width="200%" height="200%">
+        <feColorMatrix type="matrix" in="SourceGraphic"
+             values="1 .2 .2 0 0 
+                     0 .5 0 0 0 
+                     0 0 .5 0 0 
+                     1 1 1 0 0"/>
+      </filter>
       
 
       <symbol id="figure_slugbody">
@@ -84,6 +92,8 @@
           data-ng-attr-x="{{200 + (papilla.index) * (700 / (numPapillae+1))}}" 
           y="50"
           class="neuromean-viz-papilla"
+          ng-attr-filter="{{papilla.isBeingTouched ? 'url(#papillatouched)' : ''}}"
+          data-ng-click="papilla.isBeingTouched = !papilla.isBeingTouched"
           ></use>
       
       <!-- slug body -->
