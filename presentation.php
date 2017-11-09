@@ -18,7 +18,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
   <body class="container">
     <video playsinline autoplay muted loop poster="golgicells.jpg" id="bgvid">
-        <source src="img/bgvid/9657302.mov" type="video/mp4">
+        <source src="img/bgvid/shutterstock_v2406011.mov" type="video/mp4">
     </video>    
     
     
