@@ -278,6 +278,11 @@
           data-ng-attr-points="{{getEEGPolylinePoints()}}"/>
     </svg>
     <img src="img/needle.png"></img>
+    
+    <div class="readout">
+      <label>Total LOVN activity:</label>
+      <span class="digital">{{getTotalOutputNerveActivity() * 20|number:2}} Hz</span>
+    </div>
   </div>
   
 </div>

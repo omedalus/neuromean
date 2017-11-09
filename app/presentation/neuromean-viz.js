@@ -135,7 +135,6 @@ let neuromeanVizDirective = function($interval) {
     let eegPaperOffset = 0;
     let eegActivityHistory = [0];
 
-
     let addEEGdata = function() {
       let eegDiv = $('.neuromean-viz-eeg', element);
       eegDiv.css('background-position-x', `${-eegPaperOffset}px`);

@@ -30,7 +30,7 @@
   box-shadow: 2px 4px 8px 8px rgba(0,0,0,.3);
 }
 
-.neuromean-viz img {
+.neuromean-viz .neuromean-viz-eeg img {
   width: 10%;
   position: absolute;
   z-index: 10;
@@ -38,6 +38,28 @@
   top: calc(50% - 5px);
   transition: top 5ms;
 }
+
+.neuromean-viz .neuromean-viz-eeg .readout {
+  position: absolute;
+  left: 10px;
+  top: -1.6em;
+  font-variant: small-caps;
+  font-family: 'Courier New';
+}
+.neuromean-viz .neuromean-viz-eeg .readout .digital {
+  font-weight: bold;
+  display: inline-block;
+  width: 6em;
+  text-align: right;
+  text-shadow: 1px 1px #a00;
+  background: black;
+  color: #f00;
+  padding: 0 5px;
+  border-radius: 4px;
+  border: 1px solid #666;
+}
+
+
 
 .neuromean-viz .neuromean-viz-controls {
   background-color: rgba(0,0,0,.5);
