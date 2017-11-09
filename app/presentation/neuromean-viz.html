@@ -14,7 +14,14 @@
         <stop stop-color="#ccc" offset="10%" />
         <stop stop-color="#ffc" offset="20%" />
         <stop stop-color="#986" offset="80%" />
-      </linearGradient>    
+      </linearGradient>
+      
+      <radialGradient id="fill_sensory_junctions"
+          cx="0.5" cy="0.5" r="0.5" fx="0.3" fy="0.3">
+        <stop stop-color="#99a" offset="5%" />
+        <stop stop-color="#446" offset="50%" />
+      </radialGradient>    
+      
 
       <filter id="dropshadow" x="0" y="0" width="200%" height="200%">
         <feOffset result="offOut" in="SourceAlpha" dx="10" dy="10" />
@@ -27,7 +34,7 @@
              values=".2 .1 .1 0 0 
                      .1 .2 .1 0 0 
                      .1 .1 .2 0 0 
-                     1 1 1 0 0"/>
+                     0 0 0 1 0"/>
       </filter>
 
       <filter id="papillatouched" x="0" y="0" width="200%" height="200%">
@@ -35,7 +42,7 @@
              values="1 .2 .2 0 0 
                      0 .5 0 0 0 
                      0 0 .5 0 0 
-                     1 1 1 0 0"/>
+                     0 0 0 1 0"/>
       </filter>
       
 
@@ -89,10 +96,10 @@
       <!-- real papillae -->
       <use href="#figure_papilla" 
           data-ng-repeat="papilla in papillae"
-          data-ng-attr-x="{{200 + (papilla.index) * (700 / (numPapillae+1))}}" 
+          data-ng-attr-x="{{papilla.graphics.x}}" 
           y="50"
           class="neuromean-viz-papilla"
-          ng-attr-filter="{{papilla.isBeingTouched ? 'url(#papillatouched)' : ''}}"
+          data-ng-attr-filter="{{papilla.graphics.filter()}}"
           data-ng-click="papilla.isBeingTouched = !papilla.isBeingTouched"
           ></use>
       
@@ -100,11 +107,35 @@
       <use href="#figure_slugbody"></use>
     </g>
 
+
     <g class="neuromean-viz-svg-nerve">
-      <path data-ng-repeat="nerveFiber in nerveFibers"
-          stroke="#226" stroke-width="1" fill="#446"
-          data-ng-attr-d="{{nerveFiber.graphics.path()}}">
-      </path>
+      <g>
+        <path data-ng-repeat="nerveFiber in nerveFibers"
+            stroke="#226" stroke-width="1" fill="#446"
+            data-ng-attr-d="{{nerveFiber.graphics.path}}">
+        </path>
+        <path data-ng-repeat="nerveFiber in nerveFibers"
+            stroke="rgba(255,128,128,.1)" stroke-width="1" fill="rgba(255,128,128,.6)"
+            data-ng-attr-d="{{nerveFiber.graphics.path}}"
+            data-ng-attr-opacity="{{nerveFiber.activity}}">
+        </path>
+        
+      </g>
+      
+      <g data-ng-repeat="nerveFiber in nerveFibers">
+        <g data-ng-repeat="papilla in papillae"
+            data-ng-if="nerveFiber.canReachPapilla(papilla)">
+          <circle
+              data-ng-attr-cx="{{40 + papilla.graphics.x}}"
+              data-ng-attr-cy="{{nerveFiber.graphics.y}}"
+              data-ng-attr-r = "{{nerveFiber.graphics.r}}"
+              stroke="#226"
+              stroke-width=".5"
+              fill="url(#fill_sensory_junctions)"
+              data-ng-attr-filter="{{papilla.graphics.filter()}}"
+              ></circle>
+        </g>
+      </g>
     </g>    
 
   </svg>
@@ -137,6 +168,46 @@
           {{numNerveFibers}}
         </td>
       </tr>
+
+      <tr>
+        <td>
+          <label>Nerve fiber reach begin (%)</label>
+        </td>
+        <td>
+          <input type="range" min="1" max="100"
+              data-ng-model="baseReachPct">
+        </td>
+        <td>
+          {{baseReachPct}}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label>Nerve fiber sensivity begin (%)</label>
+        </td>
+        <td>
+          <input type="range" min="1" max="100"
+              data-ng-model="baseSensitivityPct">
+        </td>
+        <td>
+          {{baseReachPct}}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <label>Nerve fiber sensivity increment (%)</label>
+        </td>
+        <td>
+          <input type="range" min="1" max="200"
+              data-ng-model="sensitivityIncrementPct">
+        </td>
+        <td>
+          {{sensitivityIncrementPct}}
+        </td>
+      </tr>
+
       
     </table>
   </div>

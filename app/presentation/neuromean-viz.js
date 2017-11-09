@@ -6,7 +6,7 @@
 
 let fiberPath = function(fiber) {
   let gap = fiber.index * 10;
-  let reachlen = fiber.reach * 900;
+  let reachlen = 200 + fiber.reach * 700 - gap;
   
   let path = `M${10 + gap},360 
              l0,${-200 + gap} 
@@ -27,11 +27,20 @@ let link = function(scope, element, attrs) {
   scope.resetPapillae = function() {
     scope.papillae = [];
     _.times(scope.numPapillae, function(iPapilla) {
-      scope.papillae.push({
+      let papilla = {
         index: iPapilla,
         fraction: iPapilla / scope.numPapillae,
         isBeingTouched: false
-      });
+      };
+      
+      papilla.graphics = {
+        x: 200 + (papilla.index) * (700 / (scope.numPapillae+1)),
+        filter: function() {
+          return papilla.isBeingTouched ? 'url(#papillatouched)' : '';
+        }
+      };
+
+      scope.papillae.push(papilla);
     });
   };
   
@@ -44,27 +53,50 @@ let link = function(scope, element, attrs) {
         activity: 0
       };
       
-      let baseReach = scope.baseReach || 0;
-      let baseSensitivity = scope.baseSensitivity || 0;
-      let sensitivityIncrement = scope.sensitivityIncrement || 1;
+      let baseReach = (scope.baseReachPct || 0) / 100;
+      let baseSensitivity = (scope.baseSensitivityPct || 0) / 100;
+      let sensitivityIncrement = (scope.sensitivityIncrementPct || 100) / 100;
       
       fiber.reach = Math.min(1, (1 - fiber.fraction) + baseReach);
-      fiber.sensitivity = baseSensitivity + (sensitivityIncrement * fiber.fraction);
+      fiber.sensitivity = baseSensitivity + (sensitivityIncrement * (1 - fiber.reach));
       
       fiber.graphics = {
-        path: function() { return fiberPath(fiber); }
+        path: fiberPath(fiber),
+        y: 112 + (fiber.index * 10),
+        r: 3 + 5*fiber.sensitivity
       };
+      
+      fiber.canReachPapilla = function(papilla) {
+        let can = fiber.reach >= papilla.fraction;
+        return can;
+      };
+      
+      
+      // DEV ONLY
+      fiber.activity = fiber.fraction;
       
       scope.nerveFibers.push(fiber);
     });
   };
-  
-  scope.$watch('numPapillae', function(newval) {
+
+  let reset = function() {
     scope.resetPapillae();
-  });
-  scope.$watch('numNerveFibers', function(newval) {
     scope.resetNerveFibers();
+  };
+  
+  scope.$watchGroup([
+      'numPapillae', 'numNerveFibers', 'baseReachPct', 'baseSensitivityPct', 'sensitivityIncrementPct'
+      ], 
+      function(newval) {
+    reset();
   });
+  
+  
+  scope.numPapillae = 20;
+  scope.numNerveFibers = 10;
+  scope.baseReachPct = 0;
+  scope.baseSensitivityPct = 0;
+  scope.sensitivityIncrementPct = 100;
 };
 
 let neuromeanVizDirective = function() {
