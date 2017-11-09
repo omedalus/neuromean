@@ -1,6 +1,6 @@
 <div class="neuromean-viz">
   <svg 
-      viewbox="0 0 1000 500"
+      viewbox="0 0 1000 350"
       preserveAspectRatio="xMidYMid meet"
     >
     
@@ -49,12 +49,11 @@
       <symbol id="figure_slugbody">
         <path
             fill="url(#fill_slugbody)"
-            d="M-10,100 
-               L950,100
-               C1000,100 1000,180 950,200
-               C600,300 800,300 900,510
-               L800,510 
-               L-10,500
+            d="M-10,50 
+               L950,50
+               C1000,50 1000,130 950,175
+               C825,300 800,250 950,350
+               l-1000,0
                Z"
             />
       </symbol>
@@ -88,7 +87,7 @@
         <use href="#figure_papilla" 
             data-ng-repeat="papilla in papillae"
             data-ng-attr-x="{{200 - (papillae.length-papilla.index) * (700 / (numPapillae+1))}}" 
-            y="50"
+            y="0"
             class="neuromean-viz-dummy-papilla"
             ></use>
       </g>
@@ -97,7 +96,7 @@
       <use href="#figure_papilla" 
           data-ng-repeat="papilla in papillae"
           data-ng-attr-x="{{papilla.graphics.x}}" 
-          y="50"
+          y="0"
           class="neuromean-viz-papilla"
           data-ng-attr-filter="{{papilla.graphics.filter()}}"
           data-ng-click="papilla.isBeingTouched = !papilla.isBeingTouched"

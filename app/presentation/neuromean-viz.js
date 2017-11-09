@@ -6,9 +6,11 @@
 
 let fiberPath = function(fiber) {
   let gap = fiber.index * 10;
-  let reachlen = 200 + fiber.reach * 700 - gap;
+  let reachlen = 200 + fiber.reach * 700;
+  reachlen = Math.min(reachlen, 850);
+  reachlen -= gap;
   
-  let path = `M${10 + gap},360 
+  let path = `M${10 + gap},310 
              l0,${-200 + gap} 
              s0,-50 50,-50
              l${reachlen},0 
@@ -24,6 +26,13 @@ let fiberPath = function(fiber) {
 let neuromeanVizDirective = function($interval) {
   let link = function(scope, element, attrs) {
     scope.resetPapillae = function() {
+      let oldTouchings = _.map(scope.papillae, function(papilla) {
+        return {
+          fraction: papilla.fraction,
+          isBeingTouched: papilla.isBeingTouched
+        };
+      });
+      
       scope.papillae = [];
       _.times(scope.numPapillae, function(iPapilla) {
         let papilla = {
@@ -38,6 +47,9 @@ let neuromeanVizDirective = function($interval) {
             return papilla.isBeingTouched ? 'url(#papillatouched)' : '';
           }
         };
+        
+        // Restore approximation of old touchings.
+        
   
         scope.papillae.push(papilla);
       });
@@ -61,7 +73,7 @@ let neuromeanVizDirective = function($interval) {
         
         fiber.graphics = {
           path: fiberPath(fiber),
-          y: 112 + (fiber.index * 10),
+          y: 62 + (fiber.index * 10),
           r: 3 + 5*fiber.sensitivity,
           opacity: function() { return Math.sqrt(fiber.activity); }
         };
