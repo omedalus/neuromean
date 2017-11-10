@@ -1,0 +1,16 @@
+
+.nicescroll::-webkit-scrollbar
+{
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+.nicescroll::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.nicescroll::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
+}
