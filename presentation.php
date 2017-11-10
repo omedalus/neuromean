@@ -16,7 +16,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     <link rel="stylesheet" type="text/css" href="style/presentation.css" />
     <link rel="stylesheet" type="text/css" href="style/neuromean-viz.css" />
     
-    <title>Nerve Activity Proportional To Stimulus Position</title>
+    <title>Modeling odor tracking computations in the peripheral nervous system of a predatory snail</title>
   </head>
 
   <body class="container-fluid">
@@ -26,7 +26,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     
     
     <header>
-      <h1>Nerve Activity Proportional To Stimulus Position</h1>
+      <h1>Modeling odor tracking computations in the peripheral nervous system of a predatory snail</h1>
     </header>
 
     <article class="roundedscreen" data-neuromean-viz="">

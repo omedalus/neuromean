@@ -2,6 +2,7 @@ body {
   background: #200;
   color: #C80;
   font-family: 'Garamond';
+  min-width: 718px;
 }
 
 video#bgvid {
@@ -56,6 +57,7 @@ h1 {
   border-radius: 10px;
   display: inline-block;
   width: 100%;
+  font-size: 150%;
 }
 
 .sidebox {
