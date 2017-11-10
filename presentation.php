@@ -32,23 +32,36 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       </p>
     </header>
 
-    <article class="roundedscreen" data-neuromean-viz="">
-      
-    </article>
 
-    <div class="screens">
-      <div class="sidebox roundedscreen">
+    <div class="screenboxes">
+      <div class="screenbox roundedscreen">
+        <label>Intro</label>
         <video playsinline autoplay muted loop poster="img/bytryingital.jpg" id="slugfeeding">
             <source src="img/Pleurobranchaea-feeding-2.mp4" type="video/mp4">
         </video>
     </div>
-      <div class="sidebox roundedscreen">
-        <img src="img/_DSC5325.jpg" id="slugface"></img>
+      <div class="screenbox roundedscreen">
+        <label>Background</label>
+        <img src="img/pleuro-neuro-photo-overlay.png" id="slugface"></img>
       </div>
-      <div class="sidebox roundedscreen">
-        Slug diagram
+      <div class="screenbox roundedscreen">
+        <label>Anatomy</label>
+        <img src="img/tentacle-nerve.png" id="tentaclenerveinlay"></img>
+      </div>
+      <div class="screenbox roundedscreen">
+        <label>Methods</label>
+        <img src="img/tentacle-nerve.png" id="tentaclenerveinlay"></img>
+      </div>
+      <div class="screenbox roundedscreen">
+        <label>Observations</label>
+        <img src="img/tentacle-nerve.png" id="tentaclenerveinlay"></img>
       </div>
     </div>
+    
+    <article class="roundedscreen" data-neuromean-viz="">
+    </article>
+    
+    
   </body>
 
 
