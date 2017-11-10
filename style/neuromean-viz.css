@@ -1,5 +1,11 @@
 .neuromean-viz {
   position: relative;
+  background-color: #884;
+  font-size: 0;
+}
+
+.neuromean-viz > *{
+  font-size: 18px;
 }
 
 .neuromean-viz .neuromean-viz-neural-network {
@@ -71,4 +77,28 @@
   bottom: 5%;
   right: 5%;
   display: inline-block;
+}
+
+.neuromean-viz .neuromean-viz-controls table {
+  margin: auto;
+}
+
+/* --- MEDIA --- */
+
+@media (max-width: 1200px) {
+  .neuromean-viz > * {
+    font-size: 10px;
+  }
+  .neuromean-viz .neuromean-viz-controls {
+    position: relative;
+    width: calc(100% - 10px);
+    left: 5px;
+    margin: 5px 0;
+  }
+  .neuromean-viz .neuromean-viz-eeg {
+    bottom: 15em;
+    width: 25%;
+    left: inherit;
+    right: 20%;
+  }
 }
