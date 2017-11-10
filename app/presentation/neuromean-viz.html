@@ -226,40 +226,40 @@
 
       <tr>
         <td>
-          <label>Nerve fiber reach baseline (%)</label>
+          <label>Reach</label>
         </td>
         <td>
           <input type="range" min="1" max="100" class="slider"
               data-ng-model="baseReachPct">
         </td>
         <td class="control-value">
-          {{baseReachPct}}
+          {{baseReachPct-1}}%
         </td>
       </tr>
 
       <tr>
         <td>
-          <label>Nerve fiber sensitivity baseline (%)</label>
+          <label>Sensitivity</label>
         </td>
         <td>
           <input type="range" min="1" max="100" class="slider"
               data-ng-model="baseSensitivityPct">
         </td>
         <td class="control-value">
-          {{baseSensitivityPct}}
+          {{baseSensitivityPct-1}}%
         </td>
       </tr>
 
       <tr>
         <td>
-          <label>Nerve fiber sensitivity gradient (%)</label>
+          <label>Sensitivity gradient</label>
         </td>
         <td>
           <input type="range" min="1" max="100" class="slider"
               data-ng-model="sensitivityIncrementPct">
         </td>
         <td class="control-value">
-          {{sensitivityIncrementPct}}
+          {{sensitivityIncrementPct-1}}%
         </td>
       </tr>
 

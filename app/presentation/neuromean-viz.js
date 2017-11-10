@@ -114,8 +114,8 @@ let neuromeanVizDirective = function($interval) {
     scope.numPapillae = 20;
     scope.numNerveFibers = 10;
     scope.baseReachPct = 0;
-    scope.baseSensitivityPct = 30;
-    scope.sensitivityIncrementPct = 50;
+    scope.baseSensitivityPct = 31;
+    scope.sensitivityIncrementPct = 51;
 
 
     scope.simulationSpeed = 0.2;

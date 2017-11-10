@@ -23,6 +23,7 @@ video#bgvid {
 }
 
 .noselect {
+  cursor: default;
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
@@ -48,16 +49,19 @@ header {
 
 h1 {
   color: #C80;
-  font-family: 'Garamond';
   font-weight: bold;
   text-shadow: 1px 1px 1px #000;
   white-space: nowrap;
-  background-color: rgba(0,0,0, .5);
-  padding: 10px 20px;
-  border-radius: 10px;
-  display: inline-block;
   width: 100%;
   font-size: 150%;
+}
+
+h1,
+header p {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: rgba(0,0,0, .5);
+  display: inline-block;
 }
 
 .sidebox {

@@ -5,11 +5,10 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache"); // HTTP/1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 ?><!DOCTYPE html>
-<html data-ng-app="playgroundApp">
+<html data-ng-app="presentationApp">
   <head>
     <?php include 'php/html_head_common.php'; ?>
     
-    <script src="app/presentation/neuron.js"></script>
     <script src="app/presentation/presentation.js"></script>
     <script src="app/presentation/neuromean-viz.js"></script>
 
@@ -20,7 +19,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     <title>Modeling odor tracking computations in the peripheral nervous system of a predatory snail</title>
   </head>
 
-  <body class="container-fluid">
+  <body class="container-fluid noselect">
     <video playsinline autoplay muted loop poster="img/red-golgi-background.png" id="bgvid">
         <source src="img/bgvid/shutterstock_v2406011.mov" type="video/mp4">
     </video>    
@@ -28,13 +27,16 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     
     <header>
       <h1>Modeling odor tracking computations in the peripheral nervous system of a predatory snail</h1>
+      <p>
+        Mikhail Voloshin, Martha Gillette, Rhanor Gillette
+      </p>
     </header>
 
     <article class="roundedscreen" data-neuromean-viz="">
-      asdfsd
+      
     </article>
 
-    <div class="sidebar">
+    <div class="screens">
       <div class="sidebox roundedscreen">
         <video playsinline autoplay muted loop poster="img/bytryingital.jpg" id="slugfeeding">
             <source src="img/Pleurobranchaea-feeding-2.mp4" type="video/mp4">

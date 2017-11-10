@@ -83,7 +83,7 @@
   margin: auto;
 }
 
-.neuromean-viz .neuromean-viz-controls table td {
+.neuromean-viz .neuromean-viz-controls table td input {
   padding: 0 10px;
 }
 
