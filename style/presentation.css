@@ -17,7 +17,7 @@ video#bgvid {
   -moz-transform: translateX(-50%) translateY(-50%);
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  background: url('/img/golgicells.jpg') repeat-x;
+  background: url('/img/red-golgi-background.png') repeat-x;
   background-size: cover; 
 }
 
