@@ -76,17 +76,19 @@ p {
 }
 
 .screenboxes {
+  text-align: center;
 }
 
 .screenbox {
   width: 160px;
   height: 100px;
   position: relative;
-  filter: grayscale(100%);
+  filter: grayscale(100%) brightness(50%);
   cursor: pointer;
 }
-.screenbox:hover {
-  filter: grayscale(0);
+.screenbox:hover,
+.screenbox.selected {
+  filter: grayscale(0) brightness(100%);
 }
 .screenbox label {
   font-variant: small-caps;
@@ -99,7 +101,8 @@ p {
   background: rgba(0,0,0,.75);
   margin: 5px 10px;
 }
-.screenbox:hover label {
+.screenbox:hover label,
+.screenbox.selected label {
   opacity: 1;
 }
 
@@ -109,6 +112,7 @@ p {
 }
 
 article {
+  width: 100%;
 }
 
 /* --- CUSTOM VIDEO SIZING --- */
@@ -120,6 +124,27 @@ article {
   left: -20%;
   top: -20%;
 }
+
+#methodqtips {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  left: 0;
+  top: 0;
+}
+
+
+.textholder {
+  padding: 5px 10px;
+  background: #cb8;
+  color: black;
+  right: 0;
+  top: 9em;
+
+  height: 12em;
+  overflow-y: auto;  
+}
+
 
 
 /* --- SLUG FACE ANIMATION --- */
@@ -172,8 +197,19 @@ article {
   }
 }
 
-@media (min-aspect-ratio: 1/1) {
-  article {
+@media (min-aspect-ratio: 4/3) {
+  article,
+  .screenboxes {
     width: calc(100% - 320px);
+  }
+  
+  .textholder {
+    width: 320px;
+    position: absolute;
+    right: 0;
+    top: 9em;
+    
+    height: auto;
+    overflow-y: auto;    
   }
 }

@@ -102,7 +102,7 @@
   }
 }
 
-@media (max-width: 900px) and (min-aspect-ratio: 1/1) {
+@media (max-width: 900px) and (min-aspect-ratio: 4/3) {
   .neuromean-viz .neuromean-viz-controls {
     position: relative;
     width: calc(100% - 10px);
