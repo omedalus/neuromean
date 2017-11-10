@@ -15,6 +15,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
     <link rel="stylesheet" type="text/css" href="style/presentation.css" />
     <link rel="stylesheet" type="text/css" href="style/neuromean-viz.css" />
+    <link rel="stylesheet" type="text/css" href="style/slider.css" />
     
     <title>Modeling odor tracking computations in the peripheral nervous system of a predatory snail</title>
   </head>

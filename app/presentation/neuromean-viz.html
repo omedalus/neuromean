@@ -203,10 +203,10 @@
           <label>Papillae</label>
         </td>
         <td>
-          <input type="range" min="7" max="30"
+          <input type="range" min="7" max="30" class="slider"
               data-ng-model="numPapillae">
         </td>
-        <td>
+        <td class="control-value">
           {{papillae.length}}
         </td>
       </tr>
@@ -216,10 +216,10 @@
           <label>Nerve fibers</label>
         </td>
         <td>
-          <input type="range" min="4" max="13"
+          <input type="range" min="4" max="13" class="slider"
               data-ng-model="numNerveFibers">
         </td>
-        <td>
+        <td class="control-value">
           {{numNerveFibers}}
         </td>
       </tr>
@@ -229,10 +229,10 @@
           <label>Nerve fiber reach baseline (%)</label>
         </td>
         <td>
-          <input type="range" min="1" max="100"
+          <input type="range" min="1" max="100" class="slider"
               data-ng-model="baseReachPct">
         </td>
-        <td>
+        <td class="control-value">
           {{baseReachPct}}
         </td>
       </tr>
@@ -242,10 +242,10 @@
           <label>Nerve fiber sensitivity baseline (%)</label>
         </td>
         <td>
-          <input type="range" min="1" max="100"
+          <input type="range" min="1" max="100" class="slider"
               data-ng-model="baseSensitivityPct">
         </td>
-        <td>
+        <td class="control-value">
           {{baseSensitivityPct}}
         </td>
       </tr>
@@ -255,10 +255,10 @@
           <label>Nerve fiber sensitivity gradient (%)</label>
         </td>
         <td>
-          <input type="range" min="1" max="100"
+          <input type="range" min="1" max="100" class="slider"
               data-ng-model="sensitivityIncrementPct">
         </td>
-        <td>
+        <td class="control-value">
           {{sensitivityIncrementPct}}
         </td>
       </tr>
