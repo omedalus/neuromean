@@ -1,8 +1,12 @@
 <div class="thumbclick-body">
+  <span class="thumbclick-title" data-ng-if="thumbclickTitle">
+    {{thumbclickTitle}}
+  </span>
+  
   <img data-ng-attr-src="{{thumbclick}}"></img>
-  <caption>
+  <label>
     Click on thumbnail to see full image/video.
-  </caption>
+  </label>
 
   <div data-ng-transclude=""></div>
 </div>

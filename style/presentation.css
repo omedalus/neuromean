@@ -145,16 +145,50 @@ article.roundedscreen {
   padding: 5px 10px;
   background: #cb8;
   color: black;
-  top: 9em;
   margin-left: 14px;
   
+  position: relative;
   width: calc(100% - 350px);
   vertical-align: top;
-    
   height: 318px;
-  overflow-y: auto;  
+  overflow: hidden;
 }
 
+.textholder .textholder-content {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: calc(100% - 180px);
+  height: 100%;
+  overflow-y: auto;  
+  padding: 1ex 1em;
+}
+
+
+
+.textholder .thumbclick-body {
+  text-align: center;
+  display: inline-block;
+  width: 160px;
+  cursor: pointer;
+  height: 100%;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
+
+.textholder .thumbclick-body .thumbclick-title {
+  font-size: 120%;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
+.textholder .thumbclick-body label {
+  font-size: 80%;
+  font-style: italic;
+  color: #444;
+}
 
 .textholder .thumbclick-body img {
   display: inline-block;

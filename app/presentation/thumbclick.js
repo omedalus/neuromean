@@ -47,7 +47,8 @@
       link: link,
       transclude: true,
       scope: {
-        thumbclick: '='
+        thumbclick: '=',
+        thumbclickTitle: '='
       }
     }; 
   }]);
