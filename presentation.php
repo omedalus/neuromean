@@ -34,47 +34,60 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       </p>
     </header>
 
-
     <div class="screenboxes">
-      <div class="screenbox roundedscreen" data-selbox="Intro">
+      <div class="screenbox roundedscreen"
+          data-selbox="Intro"
+          data-selbox-target="'#thetextholder'">
         <label>Intro</label>
         <video playsinline autoplay muted loop poster="img/bytryingital.jpg" id="slugfeeding">
             <source src="img/Pleurobranchaea-feeding-2.mp4" type="video/mp4">
         </video>
       </div>
-      <div class="screenbox roundedscreen" data-selbox="Background">
+      <div class="screenbox roundedscreen" 
+          data-selbox="Background"
+          data-selbox-target="'#thetextholder'">
         <label>Background</label>
         <img src="img/pleuro-neuro-photo-overlay.png" id="slugface"></img>
       </div>
-      <div class="screenbox roundedscreen" data-selbox="Anatomy">
+      <div class="screenbox roundedscreen" 
+          data-selbox="Anatomy"
+          data-selbox-target="'#thetextholder'">
         <label>Anatomy</label>
         <img src="img/tentacle-nerve.png" id="tentaclenerveinlay"></img>
       </div>
-      <div class="screenbox roundedscreen" data-selbox="Methods">
+      <div class="screenbox roundedscreen" 
+          data-selbox="Methods"
+          data-selbox-target="'#thetextholder'">
         <label>Methods</label>
         <video playsinline autoplay muted loop poster="img/method-qtips.png" id="methodqtips">
             <source src="img/2pt-method-closeup-360p.mp4" type="video/mp4">
         </video>
       </div>
-      <div class="screenbox roundedscreen" data-selbox="Observations">
+      <div class="screenbox roundedscreen" 
+          data-selbox="Observations"
+          data-selbox-target="'#thetextholder'">
         <label>Observations</label>
         <img src="img/yafremava-mean-normalized-nerve-response.gif" id="yafremavanerveresp"></img>
       </div>
-      <div class="screenbox roundedscreen" data-selbox="Model">
+      <div class="screenbox roundedscreen" 
+          data-selbox="Model"
+          data-selbox-target="'#thetextholder'">
         <label>Model</label>
         <img src="img/modelsnap.png" id="modelsnap"></img>
       </div>
     </div>
     
-    
-    <div class="textholder roundedscreen nicescroll">
+
+    <div class="textholder roundedscreen nicescroll" id="thetextholder">
       <p>
         At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
       </p>
     </div>
+
     
     <article class="roundedscreen" data-neuromean-viz="">
     </article>
+
     
   </body>
 

@@ -14,12 +14,19 @@
         }
         theSelectedBox = element;
         theSelectedBox.addClass('selected');
+        
+        console.log(scope.selboxTarget);
       });
     };
     
     
     return {
-      link: link
+      link: link,
+      scope: {
+        selbox: '=',
+        selboxTarget: '=',
+        selboxSource: '='
+      }
     }; 
   }]);
 }());
