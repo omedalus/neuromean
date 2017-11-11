@@ -12,6 +12,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     <script src="app/presentation/presentation.js"></script>
     <script src="app/presentation/neuromean-viz.js"></script>
     <script src="app/presentation/selbox.js"></script>
+    <script src="app/presentation/thumbclick.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style/presentation.css" />
     <link rel="stylesheet" type="text/css" href="style/neuromean-viz.css" />
@@ -38,7 +39,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       <div class="screenbox roundedscreen"
           data-selbox="Intro"
           data-selbox-target="'#thetextholder'"
-          data-selbox-source="'partials/intro.html'">
+          data-selbox-source="'partials/intro.html'"
+          data-selbox-auto="true">
         <label>Intro</label>
         <video playsinline autoplay muted loop poster="img/bytryingital.jpg" id="slugfeeding">
             <source src="img/Pleurobranchaea-feeding-2.mp4" type="video/mp4">
@@ -85,9 +87,6 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     
 
     <div class="textholder roundedscreen nicescroll" id="thetextholder">
-      <p>
-        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
-      </p>
     </div>
 
     

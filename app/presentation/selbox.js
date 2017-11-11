@@ -6,9 +6,10 @@
   let theSelectedBox = null;
   
   
-  app.directive("selbox", [function() {
+  app.directive("selbox", ['$http', '$compile', 
+      function($http, $compile) {
     let link = function(scope, element, attrs) {
-      element.click(function() {
+      let onclick = function() {
         if (theSelectedBox) {
           theSelectedBox.removeClass('selected');
         }
@@ -16,8 +17,18 @@
         theSelectedBox.addClass('selected');
         
         let targetDiv = $(scope.selboxTarget);
-        targetDiv.load(scope.selboxSource);
-      });
+
+        $http.get(scope.selboxSource).then(function(response) {
+          let responseElem = $('<div/>').html(response.data);
+          targetDiv.empty().append($compile(responseElem)(scope));
+        });        
+      };
+      
+      element.click(onclick);
+      
+      if (scope.selboxAuto) {
+        onclick();
+      }
     };
     
     
@@ -26,7 +37,8 @@
       scope: {
         selbox: '=',
         selboxTarget: '=',
-        selboxSource: '='
+        selboxSource: '=',
+        selboxAuto: '='
       }
     }; 
   }]);
