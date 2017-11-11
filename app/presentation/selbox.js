@@ -15,7 +15,8 @@
         theSelectedBox = element;
         theSelectedBox.addClass('selected');
         
-        console.log(scope.selboxTarget);
+        let targetDiv = $(scope.selboxTarget);
+        targetDiv.load(scope.selboxSource);
       });
     };
     

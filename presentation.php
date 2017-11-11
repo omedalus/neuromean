@@ -37,7 +37,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     <div class="screenboxes">
       <div class="screenbox roundedscreen"
           data-selbox="Intro"
-          data-selbox-target="'#thetextholder'">
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/intro.html'">
         <label>Intro</label>
         <video playsinline autoplay muted loop poster="img/bytryingital.jpg" id="slugfeeding">
             <source src="img/Pleurobranchaea-feeding-2.mp4" type="video/mp4">
@@ -45,19 +46,22 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       </div>
       <div class="screenbox roundedscreen" 
           data-selbox="Background"
-          data-selbox-target="'#thetextholder'">
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/background.html'">
         <label>Background</label>
         <img src="img/pleuro-neuro-photo-overlay.png" id="slugface"></img>
       </div>
       <div class="screenbox roundedscreen" 
           data-selbox="Anatomy"
-          data-selbox-target="'#thetextholder'">
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/anatomy.html'">
         <label>Anatomy</label>
         <img src="img/tentacle-nerve.png" id="tentaclenerveinlay"></img>
       </div>
       <div class="screenbox roundedscreen" 
           data-selbox="Methods"
-          data-selbox-target="'#thetextholder'">
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/methods.html'">
         <label>Methods</label>
         <video playsinline autoplay muted loop poster="img/method-qtips.png" id="methodqtips">
             <source src="img/2pt-method-closeup-360p.mp4" type="video/mp4">
@@ -65,13 +69,15 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
       </div>
       <div class="screenbox roundedscreen" 
           data-selbox="Observations"
-          data-selbox-target="'#thetextholder'">
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/observations.html'">
         <label>Observations</label>
         <img src="img/yafremava-mean-normalized-nerve-response.gif" id="yafremavanerveresp"></img>
       </div>
       <div class="screenbox roundedscreen" 
           data-selbox="Model"
-          data-selbox-target="'#thetextholder'">
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/model.html'">
         <label>Model</label>
         <img src="img/modelsnap.png" id="modelsnap"></img>
       </div>
