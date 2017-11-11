@@ -66,6 +66,7 @@ header p {
 }
 
 p {
+  line-height: 1.2em;
   cursor: text;
   -webkit-touch-callout: text; /* iOS Safari */
     -webkit-user-select: text; /* Safari */
@@ -154,6 +155,14 @@ article.roundedscreen {
   overflow-y: auto;  
 }
 
+
+.textholder .image {
+  display: inline-block;
+  width: 160px;
+  height: 100px;
+  background-size: contain;
+  margin: 5px 10px;
+}
 
 
 /* --- SLUG FACE ANIMATION --- */
