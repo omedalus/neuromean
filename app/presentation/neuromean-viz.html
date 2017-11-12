@@ -263,6 +263,18 @@
         </td>
       </tr>
 
+      <tr>
+        <td>
+          <label>Inhibition strength</label>
+        </td>
+        <td>
+          <input type="range" min="1" max="500" class="slider"
+              data-ng-model="lateralInhibitionStrengthPct">
+        </td>
+        <td class="control-value">
+          {{lateralInhibitionStrengthPct-1}}%
+        </td>
+      </tr>
       
     </table>
   </div>

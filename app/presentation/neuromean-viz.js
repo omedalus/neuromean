@@ -76,11 +76,12 @@ let neuromeanVizDirective = function($interval) {
         let baseReach = (scope.baseReachPct || 0) / 100;
         let baseSensitivity = (scope.baseSensitivityPct || 0) / 100;
         let sensitivityIncrement = (scope.sensitivityIncrementPct || 100) / 100;
+        let lateralInhibitionStrength = (scope.lateralInhibitionStrengthPct || 100) / 100;
 
         fiber.reach = Math.min(1, (1 - fiber.fraction) + baseReach);
         fiber.sensitivity = Math.min(1, baseSensitivity + (sensitivityIncrement * (1 - fiber.reach)));
         
-        fiber.suppressivePower = 2 * (1 - fiber.sensitivity);
+        fiber.suppressivePower = lateralInhibitionStrength * (1 - fiber.sensitivity);
         
         fiber.graphics = {
           path: fiberPath(fiber),
@@ -116,6 +117,7 @@ let neuromeanVizDirective = function($interval) {
     scope.baseReachPct = 0;
     scope.baseSensitivityPct = 31;
     scope.sensitivityIncrementPct = 51;
+    scope.lateralInhibitionStrengthPct = 201;
 
 
     scope.simulationSpeed = 0.2;
@@ -199,7 +201,7 @@ let neuromeanVizDirective = function($interval) {
       // Update nerve objects with new activity levels.
       _.each(scope.nerveFibers, function(fiber, iFiber) {
         let newActivity = nerveActivities[iFiber];
-        newActivity = Math.min(newActivity, 1);
+        //newActivity = Math.min(newActivity, 1);
         newActivity = Math.max(newActivity, 0);
         
         fiber.activity = 
