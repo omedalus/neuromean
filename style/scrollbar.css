@@ -1,3 +1,7 @@
+.nicescroll {
+  overflow-y: scroll;
+}
+
 
 .nicescroll::-webkit-scrollbar
 {

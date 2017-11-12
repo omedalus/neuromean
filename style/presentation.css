@@ -94,6 +94,10 @@ p {
 .screenbox.selected {
   filter: grayscale(0) brightness(100%);
 }
+.screenbox.selected:hover {
+  filter: brightness(200%);
+}
+
 .screenbox label {
   font-variant: small-caps;
   position: absolute;
@@ -161,7 +165,6 @@ article.roundedscreen {
   top: 0;
   width: calc(100% - 180px);
   height: 100%;
-  overflow-y: auto;  
   padding: 1ex 1em;
 }
 
@@ -269,7 +272,6 @@ article.roundedscreen {
     top: 9em;
     
     height: auto;
-    overflow-y: auto;    
   }
 }
 */
