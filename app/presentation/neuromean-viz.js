@@ -1,6 +1,7 @@
 /* global app */
 /* global $ */
 /* global _ */
+/* global Plotly */
 
 (function() {
 
@@ -105,7 +106,12 @@ let neuromeanVizDirective = function($interval) {
     };
     
     scope.$watchGroup([
-        'numPapillae', 'numNerveFibers', 'baseReachPct', 'baseSensitivityPct', 'sensitivityIncrementPct'
+        'numPapillae', 
+        'numNerveFibers', 
+        'baseReachPct', 
+        'baseSensitivityPct', 
+        'sensitivityIncrementPct',
+        'lateralInhibitionStrengthPct'
         ], 
         function(newval) {
       reset();
@@ -191,9 +197,9 @@ let neuromeanVizDirective = function($interval) {
       _.each(scope.nerveFibers, function(fiber) {
         let suppression = fiber.activity * fiber.suppressivePower;
         _.each(nerveActivities, function(targetActivity, iTarget) {
-          if (iTarget === fiber.index) {
-            return;
-          }
+          //if (iTarget === fiber.index) {
+          //  return;
+          //}
           nerveActivities[iTarget] -= suppression;
         });
       });
@@ -210,6 +216,99 @@ let neuromeanVizDirective = function($interval) {
       });
     };
     scope.animationIntervalHandle = $interval(timestep, scope.timestepMs);
+    
+    
+    scope.runUntilStable = function() {
+      let iterationCount = 0;
+      let lastValue = null;
+      
+      let isStable = function() {
+        let currentValue = scope.getTotalOutputNerveActivity();
+        if (iterationCount > 10000) {
+          return true;
+        }
+        if (_.isNull(lastValue)) {
+          lastValue = currentValue;
+          return false;
+        }
+        let lastDelta = Math.abs(currentValue - lastValue);
+        lastValue = currentValue;
+        if (lastDelta < 0.00005) {
+          return true;
+        }
+        return false;
+      };
+      
+      while (!isStable()) {
+        timestep();
+        iterationCount++;
+      }
+      scope.clearActivity();
+    };
+    
+    
+    scope.clearActivity = function() {
+      _.each(scope.papillae, function(papilla) {
+        papilla.isBeingTouched = false;
+      });
+      _.each(scope.nerveFibers, function(fiber) {
+        fiber.activity = 0;
+      });
+    };
+    
+    
+    scope.generateNRGraph = function() {
+      // First we get the base activity levels for each papilla individually.
+      let papillaSingleTouch = new Array(scope.papillae.length);
+      _.each(scope.papillae, function(papilla, iPapilla) {
+        scope.clearActivity();
+        papilla.isBeingTouched = true;
+        scope.runUntilStable();
+        papillaSingleTouch[iPapilla] = scope.getTotalOutputNerveActivity();
+      });
+      
+      // Next we perform all possible two-touch combinations, and record the
+      // resultant activity against the sum-of-one-touch equivalent.
+      let nrActivity = [];
+      _.each(scope.papillae, function(papillaLeft) {
+        _.each(scope.papillae, function(papillaRight) {
+          if (papillaLeft.index >= papillaRight.index) {
+            // No reason to repeat our work.
+            return;
+          }
+          
+          scope.clearActivity();
+          papillaLeft.isBeingTouched = true;
+          papillaRight.isBeingTouched = true;
+          scope.runUntilStable();
+          
+          let twotouch = scope.getTotalOutputNerveActivity();
+          let sumofonetouch = 
+              papillaSingleTouch[papillaLeft.index] + 
+              papillaSingleTouch[papillaRight.index];
+              
+          nrActivity.push({
+            sumofonetouch: sumofonetouch,
+            twotouch: twotouch,
+            NL: papillaLeft.index,
+            NR: papillaRight.index
+          });
+        });
+      });
+
+      nrActivity = _.sortBy(nrActivity, 'sumofonetouch');
+      var nerveactivitytrace = {
+        x: _.pluck(nrActivity, 'sumofonetouch'),
+        y: _.pluck(nrActivity, 'twotouch'),
+        mode: 'markers'
+      };
+      var data = [ nerveactivitytrace ];
+      var layout = {
+        title:'Two-Touch vs. One-Touch-Sum Nerve Activity'
+      };
+      
+      Plotly.newPlot('nerveactivitygraph', data, layout);
+    };
   };
 
   return {
