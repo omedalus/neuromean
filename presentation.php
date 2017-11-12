@@ -74,7 +74,14 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
           data-selbox-target="'#thetextholder'"
           data-selbox-source="'partials/visualization.html'">
         <label>Visualization</label>
-        <img src="img/modelsnap.png" id="modelsnap"></img>
+        <img src="img/modelsnap.png" id="vizdescript"></img>
+      </div>
+      <div class="screenbox roundedscreen" 
+          data-selbox="Future"
+          data-selbox-target="'#thetextholder'"
+          data-selbox-source="'partials/future.html'">
+        <label>Further</label>
+        <img src="img/Monitoraggio_incompleto.png" id="future"></img>
       </div>
     </div>
     
