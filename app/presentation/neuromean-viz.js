@@ -78,9 +78,9 @@ let neuromeanVizDirective = function($interval) {
         let sensitivityIncrement = (scope.sensitivityIncrementPct || 100) / 100;
 
         fiber.reach = Math.min(1, (1 - fiber.fraction) + baseReach);
-        fiber.sensitivity = baseSensitivity + (sensitivityIncrement * (1 - fiber.reach));
+        fiber.sensitivity = Math.min(1, baseSensitivity + (sensitivityIncrement * (1 - fiber.reach)));
         
-        fiber.suppressivePower = (1 - fiber.fraction);
+        fiber.suppressivePower = 2 * (1 - fiber.sensitivity);
         
         fiber.graphics = {
           path: fiberPath(fiber),
